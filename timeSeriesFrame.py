@@ -60,6 +60,12 @@ class Dataframe:
     def summary(self):
         raise ToBeImplemented
 
+    def toCSV(self, name = "default.csv"):
+        import csv 
+        csvReader = csv.writer(open(name, 'w'), dialect='excel')
+        for i in self.data.tolist():
+            csvReader.writerow(i)
+        del csvReader
 
 
 

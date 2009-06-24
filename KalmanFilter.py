@@ -3,7 +3,8 @@ import csv,numpy, scipy
 from timeSeriesFrame import *
 from copy import deepcopy
 
-DEBUG = 1
+DEBUG = 0
+kappa = 1000
 
 class UnconstrainableError(Exception):
     def __init__(self, value):
@@ -40,32 +41,57 @@ class KalmanFilter(Regression):
             else:
                 self.initBeta = scipy.ones((n,1))/float(n)
         if self.initVariance == None:
-                self.initVariance = scipy.identity(n)
+                self.initVariance = scipy.identity(n)*kappa
         if self.Phi == None:
                 self.Phi = scipy.identity(n)
-        def _kalmanfilter(beta, V, x, y):
+        def _kalmanfilter(beta, V, X, y):
+            shape = scipy.shape
             Phi = self.Phi
+            if self.intercept:
+                X = X.tolist()[0]
+                X.insert(0,1.0)
+                X = scipy.matrix(X)
             pbeta = Phi * beta
             if DEBUG:
-                print Phi.shape()
-                print V.shape()
-                print self.Sigma.shape()
-            pV = Phi * V * V.T + self.Sigma
+                print shape(Phi)
+                print shape(V)
+                print shape(self.Sigma)
+            pV = Phi * V * Phi.T + self.Sigma
+            if DEBUG:
+                print "X: ",X
+                print "pbeta: ", pbeta
             e = y - X * pbeta
-            K = pV * X.T *( 1./self.sigma + X * pV * X.T).I
+            K = pV * X.T *( self.sigma + X * pV * X.T).I
             ubeta = pbeta +  K * e
-            uV = (I - K * X.T) * pV
-            return (beta, uV)
+            if DEBUG:
+                print shape(K)
+                print shape(X)
+                print shape(pV)
+                print "K: ", K
+                print "X: ", X
+                print "K*X: ", K*X                
+            uV = (scipy.identity(n) - K* X) * pV
+            return (pbeta, pV, ubeta, uV)
 
         betaList = []
         betaList.append(self.initBeta)
-        vList = []
-        vList.append(self.initVariance)
+        betaTemp = self.initBeta
+        vTemp = self.initVariance
         for i in zip(self.regressors.rowIterator(), self.respond.rowIterator()):
-            print i[0].data
-            print i[1].data
-            result = _kalmanfilter(betaList[-1], vList[-1], i[0].data,i[1].data)
-            print result[0], result[1]
+            if DEBUG:
+                print i[0].data
+                print i[1].data
+            estimate = _kalmanfilter(scipy.matrix(betaTemp), vTemp, i[0].data,i[1].data)
+            betaList.append(estimate[0])
+            betaTemp = estimate[2]
+            vTemp = estimate[3]
+        betaMatrix = scipy.zeros((t,n))
+        for index, value in enumerate(betaList[1:]):
+            betaMatrix[index, :] = value.T
+        del betaList
+        cheader = self.regressors.cheader
+        cheader.insert(0, "Alpha")
+        self.est = TimeSeriesFrame(betaMatrix, self.regressors.rheader, cheader)
         pass
 
     def isConstraintable(self):
@@ -73,23 +99,15 @@ class KalmanFilter(Regression):
         return False
     
 def main():
-    obj = KalmanFilter( numpy.ones((7,7)), 10)
+    obj = KalmanFilter( numpy.ones((8,8)), 0.3)
     stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
-    #stock = TSF()
     stock = StylusReader(stock_data)
     del stock_data
     respond = stock[:,0]
     regressor = stock[:,1:]
-
-#    print respond, regressor
-#    obj.setConstraints(zeros,ones)
     obj.addData(respond,regressor)
-    try:
-        obj.train()
-    except:
-        from print_exc_plus import print_exc_plus
-        print_exc_plus()
-
+    obj.train()
+    obj.getEstimate().toCSV()
     
 if __name__ == "__main__":
     main()

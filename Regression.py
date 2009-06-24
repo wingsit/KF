@@ -77,6 +77,7 @@ is not contrain-able, a <= \beta <= b"""
     def withIntercept(self, setting = True):
         self.intercept = setting
         pass
+
     
 def main():
     obj = Regression(data = 10, paras = (10, 100))
@@ -97,7 +98,7 @@ def main():
         print obj.getEstimate(Date(2001,1,1))
     except:
         pass
-    print stock
+    obj.getEstimate().toCSV()
 
 
     
