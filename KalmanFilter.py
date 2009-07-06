@@ -235,12 +235,12 @@ class KalmanFilter(Regression):
     
 def main():
     try:
-        intercept = True
+        intercept = False
         if intercept:
-            obj = KalmanFilter( scipy.identity(8)*kappa, 0.001)
+            obj = KalmanFilter( scipy.identity(3)*kappa, 0.001)
         else:
-            obj = KalmanFilter( scipy.identity(7)*kappa, 0.001)
-        stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
+            obj = KalmanFilter( scipy.identity(2)*kappa, 0.001)
+        stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
         stock = StylusReader(stock_data)
         del stock_data
         respond = stock[:,0]
@@ -252,7 +252,7 @@ def main():
         print obj.getEstimate(date(2001,1,1))
         print obj.predict()
         print obj.predict(date(2001,1,1))
-#        obj.predict().toCSV()
+        obj.est.toCSV("default2.csv")
         print obj.R2()
     except:
         from print_exc_plus import print_exc_plus

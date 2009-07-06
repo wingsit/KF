@@ -124,12 +124,12 @@ is not contrain-able, a <= \beta <= b"""
 
 def main():
     obj = Regression(data = 10, paras = (10, 100))
-    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
+    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
     stock = StylusReader(stock_data)
     respond = stock[:,0]
     regressor = stock[:,1:]
-    zeros = numpy.zeros((7,1))
-    ones = numpy.ones((7,1))
+    zeros = numpy.zeros((2,1))
+    ones = numpy.ones((2,1))
 
     obj.withIntercept(False)
     obj.setConstraints(zeros,ones)
@@ -137,7 +137,7 @@ def main():
     obj.train()
 #    print obj.getEstimate(None)
 #    print obj.getEstimate(date(2001,1,1))
-    obj.predict().toCSV()
+    obj.est.toCSV("default2.csv")
 #    print obj.predict(date(2001,1,1))
 #    obj.getEstimate().toCSV()
     obj.R2()

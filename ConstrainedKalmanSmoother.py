@@ -1,9 +1,9 @@
-from KalmanFilter import *
+from ConstrainedKalmanFilter import *
 from Regression import Regression, ToBeImplemented
 import csv,numpy, scipy
 from timeSeriesFrame import *
-
-
+from cvxopt.solvers import qp
+from cvxopt import *
 DEBUG = 0
 kappa = 1000
 
@@ -14,8 +14,8 @@ class UnconstrainableError(Exception):
         return  repr(self.value)
 
 
-class KalmanSmoother(Regression):    
-    def __init__(self, Sigma, sigma, initBeta = None, initVariance = None, Phi = None,  **args):
+class ConstrainedKalmanSmoother(Regression):    
+    def __init__(self, Sigma, sigma, initBeta = None, initVariance = None, Phi = None, G = None, D = None, d = scipy.matrix(1.00),   **args):
         """Input: paras where they are expected to be tuple or dictionary"""
         self.initBeta = initBeta
         self.initVariance = initVariance
@@ -23,15 +23,25 @@ class KalmanSmoother(Regression):
         self.paras = args.get("paras")
         self.Sigma = Sigma
         self.sigma = sigma
+        self.D = D
+        self.G = G
+        self.d = d
+#        self.intercept = False
         pass
 
     def setConstraints(self, a, b):
-        raise UnconstrainableError("This model does not accept constraint")
+        """setConstraints for the constrained regression problem. The constrains are ignored when the regression
+is not contrain-able, a <= \beta <= b"""
+        self.a = a
+        self.b = b
+#    def setConstraints(self, a, b):
+#        raise UnconstrainableError("This model does not accept constraint")
 
     def train(self):
-        kf = KalmanFilter(self.Sigma, self.sigma, self.initBeta, self.initVariance, self.Phi )
+        kf = ConstrainedKalmanFilter(self.Sigma, self.sigma, self.initBeta, self.initVariance, self.Phi, self.G, self.D, self.d )
+        kf.withIntercept(self.intercept)
+        kf.setConstraints(self.a,self.b)
         kf.addData(self.respond, self.regressors)
-        kf.intercept = self.intercept
         kf.train()
 #        print map(len, (kf.pbetaList, kf.pVList, kf.ubetaList, kf.uVList))
         sbetaList = [kf.ubetaList[-1]]
@@ -61,16 +71,19 @@ def main():
     try:
         intercept = True
         if intercept:
-            obj = KalmanSmoother( scipy.identity(3)*kappa, 0.001)
+            obj = ConstrainedKalmanSmoother( scipy.identity(8)*kappa, 0.001)
         else:
-            obj = KalmanSmoother( scipy.identity(2)*kappa, 0.001)
-        stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+            obj = ConstrainedKalmanSmoother( scipy.identity(7)*kappa, 0.001)
+        stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
         stock = StylusReader(stock_data)
         del stock_data
         respond = stock[:,0]
         regressor = stock[:,1:]
-        obj.addData(respond,regressor)
+        zeros = numpy.zeros((7,1))
+        ones = numpy.ones((7,1))
         obj.intercept = intercept
+        obj.setConstraints(zeros,ones)
+        obj.addData(respond,regressor)
         obj.train()
         print obj.getEstimate()
         print obj.getEstimate(date(2001,1,1))
