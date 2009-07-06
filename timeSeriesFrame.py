@@ -3,6 +3,8 @@ from random import sample
 from datetime import date
 import numpy
 from utility import twoIterate
+from print_exc_plus import print_exc_plus
+
 DEBUG = 0
 
 ## Exception Classes for Dataframe##
@@ -72,8 +74,8 @@ class Dataframe:
 ## Class for TimeSeriesFrame derived from Dataframe ##
 
 class TimeSeriesFrame(Dataframe):
-    i = 0
-    ci = 0
+    i = 0                       # Counter for RowIterator
+    ci = 0                      # Counter for ColumnIterator
     def __init__(self, data = None, rowList = None, columnList = None, rown = None, coln = None):
         try:
             self.data = scipy.matrix(data)
@@ -85,9 +87,18 @@ class TimeSeriesFrame(Dataframe):
             self.columnHeader(map(str, range(len(self.data[0]))))
         
     def __len__(self):
+        """Return number of time series it has"""
         return len(self.rheader)
 
     def __getitem__(self, key):
+        """Valid Syntax
+        stock[:,1],
+        stock[:, n:m:r],
+        stock[date1:date2],
+        stock[date1:date2,:],
+        stock[date1:date2, n:m:r]
+        stock[date]
+        """
         def getIndex(l, key):
             if key == None:
                 return None
@@ -101,15 +112,17 @@ class TimeSeriesFrame(Dataframe):
                         if l[i] > key:
                             return i
         #implement single index
-        if isinstance(key, slice):
-            print "Slice: ", slice
+        if isinstance(key, date): # check stock[date]
+            key = getIndex(self.rheader, key)
+            return TimeSeriesFrame(self.data[key], self.rheader[key], self.cheader)
+        if isinstance(key, slice): # check stock[date1:date2]
             if isinstance(key.start, date) or isinstance(key.stop, date):
                 key = slice(getIndex(self.rheader,key.start), getIndex(self.rheader,key.stop))
             return TimeSeriesFrame(self.data[key], self.rheader[key], self.cheader)
-        elif len(key) > 2:
+        elif len(key) > 2:      # allow two dimensions
             raise DataframeException
         else:
-            if isinstance(key[0].start, date) or isinstance(key[0].stop, date):
+            if isinstance(key[0].start, date) or isinstance(key[0].stop, date): #stock[date1:date2,:], stock[date1:date2, n:m:r]
                 key = list(key)
                 key[0] = slice(getIndex(self.rheader,key[0].start), getIndex(self.rheader,key[0].stop))
                 key = tuple(key)
@@ -142,7 +155,7 @@ class TimeSeriesFrame(Dataframe):
                 bodystring += (tempstring +"\n")
             return bodystring
         if DEBUG: print "size: ", size
-        if size[0] < 6 and size[1] < 6:
+        if size[0] < 6 and size[1] < 4:
             cstring = "\t\t"
             cstring +=(self.cheader)
             bodystring =cstring+"\n"
@@ -189,12 +202,11 @@ class TimeSeriesFrame(Dataframe):
         except:
             raise RowHeaderExcpetion
 
-
     def size(self):
         return scipy.shape(self.data)
 
     def columnIterator(self):
-        """ This is a generator to iterate across the columns"""
+        """ This is a generator to iterate across different time series"""
         while self.ci<self.size()[1]:
             yield self[:,self.ci]
             self.ci += 1
@@ -203,9 +215,8 @@ class TimeSeriesFrame(Dataframe):
             raise StopIteration
 
 
-
     def rowIterator(self):
-        """This return a iterator of data in each day"""
+        """ This is a generator to iterate all the time series by date"""        
         while self.i < len(self.rheader):
             yield TimeSeriesFrame(self.data[self.i], self.rheader[self.i], self.cheader)
             self.i+=1
@@ -249,17 +260,28 @@ def windows(iterable, length=2, overlap = 0):
     if results:
         yield scipy.matrix(results)
 
-
         
 if __name__ =="__main__":
     stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
 #    lipper_data = list(csv.reader(open("t_lipper_daily.csv", "rb")))    
     stock = StylusReader(stock_data)
-#    stock.StylusReader(stock_data)
-#    print stock
-#    print stock[:,1]
-    stocks = list(stock.columnIterator())
-    for i in stocks:
-        print i
-        i.data = scipy.matrix(list(twoIterate(i.data, lambda x,y: (x+y)/x, 0))).T
-        print i
+    #stock.StylusReader(stock_data)
+    try: print stock
+    except: print "stock"
+    try: print stock[:,1]
+    except: print "stock[:,1]"
+    try: print stock[:, 1:6]
+    except: print "stock[:, 1:6]"
+    try:
+        from datetime import date
+        print stock[date(2001,1,1):date(2002,1,1)]
+    except: print "stock[date(2001,1,1):date(2002,1,1)]"
+    try: print stock[date(2001,1,1):date(2002,1,1),:]
+    except: print "stock[date(2001,1,1):date(2002,1,1),:]"
+    try: print stock[date(2001,1,1):date(2002,1,1),1:6]
+    except: print "stock[date(2001,1,1):date(2002,1,1),1:6]"
+    try: print stock[date(2001,1,1)]
+    except: 
+        print "stock[date(2001,1,1)]"
+        print_exc_plus()
+    

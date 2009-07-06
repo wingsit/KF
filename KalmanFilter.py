@@ -99,15 +99,19 @@ class KalmanFilter(Regression):
         return False
     
 def main():
-    obj = KalmanFilter( numpy.ones((8,8)), 0.3)
-    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
-    stock = StylusReader(stock_data)
-    del stock_data
-    respond = stock[:,0]
-    regressor = stock[:,1:]
-    obj.addData(respond,regressor)
-    obj.train()
-    obj.getEstimate().toCSV()
-    
+    try:
+        obj = KalmanFilter( scipy.identity(2)*kappa, 0.001)
+        stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+        stock = StylusReader(stock_data)
+        del stock_data
+        respond = stock[:,0]
+        regressor = stock[:,1:]
+        obj.addData(respond,regressor)
+        obj.intercept = False
+        obj.train()
+        obj.getEstimate().toCSV()
+    except:
+        from print_exc_plus import print_exc_plus
+        print_exc_plus()
 if __name__ == "__main__":
     main()

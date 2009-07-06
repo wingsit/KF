@@ -1,10 +1,7 @@
 \documentclass{article}
 \usepackage{amssymb}
 \usepackage{mathrsfs} %%Margins must be 1 inch, top & bottom 1 in%%
-\marginparwidth 0pt \oddsidemargin  0pt \evensidemargin  0pt
-\marginparsep 0pt \topmargin   -.50in \textwidth   6.5in \textheight
-9in
-%\usepackage{fullpage}
+\usepackage{fullpage}
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{exscale}
@@ -293,13 +290,39 @@ K_t &=  V_{t|t-1} (X)^T (\frac1\sigma + X V_{t|t-1} X )^{-1}
 
 
 \section{Kalman Smoother}
-Suppose we are given the Kalman Filter result, the Kalman Smoother solution is given by
+We develope here one form of the linear smoother using the Bayesian maximum likelihood approach. 
+Suppose we are given the Kalman Filter result $(\beta_{t|t}, V_{t|t})$, we seek a recursion for $\beta_{t|T}$. Now the conditional mean $\hat{\beta}_{t|T}, \hat{\beta}_{t+1|T}$ are $\beta_{t|T}, \beta_{t+1|T}$, respectively. Those values the Kalman Smoother solution is given by seeking the solution to maximise the density
+\[
+\PP( \beta_t, \beta_{t+1} | y_1^T)
+\]
+
+now
+\begin{equation*}
+\begin{split}
+\PP(\beta_t, \beta_{t+1}|Y_1^T) &= \frac{\PP(\beta_t, \beta_{t+1}, y_1^T)}{\PP(y_1^T)} = \frac{\PP(\beta_t, \beta_{t+1}, y_1^t, y_{t+1}, \cdots, y_T)}{\PP(y_1^T)}\\
+&=\frac{\PP(Y_t)}{\PP(y_1^t)} \PP(\beta_t, \beta_{t+1}, y_{t+1}, \cdots, y_T|y_1^t)\\
+&=\frac{\PP(Y_t)}{\PP(y_1^t)} \PP(y_{t+1}, \cdots, y_T|y_1^t)\PP(\beta_t, \beta_{t+1}|y_1^t)
+\end{split}
+\end{equation}
+But
+\[
+\PP(y_{t+1}, \cdots, y_T | \beta_{t}, \beta_{t+1}, y_1^t) = \PP(y_{t+1}, \cdots, y_T | \beta_{t+1}),
+\]
+and
+\[
+\PP(\beta_t, \beta_{t+1}| y_1^t) =\PP( \beta_{t+1}|\beta_t, y_1^t)  \PP( \beta_t |y_1^t) = \PP( \beta_{t+1}|\beta_t)  \PP( \beta_t |y_1^t),
+\]
+in view of the properties of our system, so that 
+\begin{equation}
+\PP(\beta_t, \beta_{t+1}|Y_1^T) = c(\beta_{t+1}) \PP( \beta_{t+1}|\beta_t)  \PP( \beta_t |y_1^t)
+\end{equation}
+Note that produce of gaussian pdf is again gaussian, and solution to the maximisation problem is:
 \begin{equation}
 \begin{split}
 V^-_{t+1|T} &= \Phi V_{t|T}\Phi  + \Sigma\\
+V_{t|T} &= V_{t|t} + K_t [ V_{t+1|T} - V^-_{t+1|t}] K^T_t\\
 K_t &= V_{t|t} \Phi ({V_{t+1|t}^- })^{-T}\\
-\beta_{t|T} &= \beta_{t|t} + K_t [ \beta_{k+1|T} - \Phi \beta_{t|t}]\\
-V_{t|T} &= V_{t|t} + K_t [ V_{t+1|T} - V^-_{t+1|t}] K^T_t
+\beta_{t|T} &= \beta_{t|t} + K_t [ \beta_{t+1|T} - \Phi \beta_{t|t}]
 \end{split}
 \end{equation}
 starting from last time Step $T$, with $\beta_{T|T} = \beta_T$ and $V_{T|T} = V_{T}$.
@@ -431,16 +454,14 @@ d
 The algorithm is the following:
 \REQUIRE $\beta_{0|0}$, $V_{0|0}$
 \begin{eqnarray*}
-\beta_{t|t-1} = \Phi \: \beta_{t-1|t-1}\label{p1}\\
-V_{t|t-1} = \Phi  V_{t-1|t-1} \Phi ^T + \Sigma \label{p2}\\
-e_t = y_t -  X_t \beta_{t|t-1} \label{u1}\\
-K_t =  V_{t|t-1} X^T (\frac1\sigma + X V_{t|t-1} X )^{-1}\label{u4}\\
-\beta_{t|t} = \beta_{t|t-1} + K_t e_t\label{u2}\\
-V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\label{u3}\\
+\beta_{t|t-1} = \Phi \: \beta_{t-1|t-1}\\
+V_{t|t-1} = \Phi  V_{t-1|t-1} \Phi ^T + \Sigma\\
+e_t = y_t -  X_t \beta_{t|t-1} \\
+K_t =  V_{t|t-1} X^T (\frac1\sigma + X V_{t|t-1} X )^{-1}\\
+\beta_{t|t} = \beta_{t|t-1} + K_t e_t\\
+V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\\
 \end{eqnarray*}
 \end{algorithmic}
 \end{algorithm}
-
-
 
 \end{document}

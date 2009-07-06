@@ -1,7 +1,8 @@
 from cvxopt import *
+from cvxopt.solvers import qp
+
 from timeSeriesFrame import *
 import csv,numpy
-from cvxopt.solvers import qp
 from datetime import date
 DEBUG = 0
 
@@ -25,7 +26,11 @@ class Regression(object):
     def setConstraints(self, a, b):
         """setConstraints for the constrained regression problem. The constrains are ignored when the regression
 is not contrain-able, a <= \beta <= b"""
-        self.h = matrix([matrix(0.0),-matrix(a),matrix(0.0),matrix(b)]) # set constraints
+        if self.intercept:
+            self.h = matrix([matrix(0.0),-matrix(a),matrix(0.0),matrix(b)]) # set constraints
+        else:
+            self.h = matrix([-matrix(a),matrix(b)]) # set constraints
+                
         pass
 
     def train(self):
