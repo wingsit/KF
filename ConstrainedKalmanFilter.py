@@ -89,7 +89,7 @@ class ConstrainedKalmanFilter(Regression):
         pass
 
     def isConstraintable(self):
-        """Boolean function to see if contraints can be imposed to the model. Default is True"""
+        """This Kalman Filter support constraints."""
         return True
     
 def main():
