@@ -111,6 +111,7 @@ is not contrain-able, a <= \beta <= b"""
         self.intercept = setting
 
     def R2(self):
+        """Simple R Squared by the definition on Wikipedia"""
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
 #        print sser,sstol, 1.0 - sser/sstol
