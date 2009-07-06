@@ -1,3 +1,4 @@
+<<<<<<< HEAD:_region_.tex
 \message{ !name(kalman_filter.tex)}x\documentclass{article}
 \usepackage{amssymb}
 \usepackage{mathrsfs} %%Margins must be 1 inch, top & bottom 1 in%%
@@ -449,3 +450,456 @@ V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\label{u3}\\
 \end{document}
 
 \message{ !name(kalman_filter.tex) !offset(-451) }
+=======
+\message{ !name(kalman_filter.tex)}x\documentclass{article}
+\usepackage{amssymb}
+\usepackage{mathrsfs} %%Margins must be 1 inch, top & bottom 1 in%%
+\marginparwidth 0pt \oddsidemargin  0pt \evensidemargin  0pt
+\marginparsep 0pt \topmargin   -.50in \textwidth   6.5in \textheight
+9in
+%\usepackage{fullpage}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{exscale}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\numberwithin{algorithm}{section}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{exmp}[thm]{Example}
+\newtheorem{exc}[thm]{Exercise}
+\newtheorem{notation}[thm]{Notation}\small
+
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+\DeclareMathOperator{\dom}{dom} \DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\inte}{int} \DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\closure}{cl}
+
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\N}{\mathbf{N}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\Q}{\mathbf{Q}}
+\newcommand{\C}{\mathbf{C}}
+\newcommand{\K}{\mathbf{K}}
+\newcommand{\E}{\mathbf{E}}
+\newcommand{\Var}{\mathbf{Var}}
+\newcommand{\PP}{\mathbf{P}}
+\newcommand{\convergesto}{\mapsto}
+
+
+\newenvironment{mylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\scriptsize\bfseries}
+{\end{list}}
+
+\newenvironment{mytinylisting}
+{\begin{list}{}{\setlength{\leftmargin}{1em}}\item\tiny\bfseries}
+{\end{list}}
+
+
+\newcommand{\new}{\text{new}}
+\newcommand{\old}{\text{old}}
+
+\title{Kalman Filter with equality/inequality Constraints}
+\author{Leon Sit\footnote{\texttt{leonsit@markovprocesses.com}, Markov Processes International}}
+
+\begin{document}
+
+\message{ !name(kalman_filter.tex) !offset(-3) }
+
+
+\renewcommand{\baselinestretch}{1.5}
+
+\maketitle
+\tableofcontents
+\listofalgorithms
+\section{Settings}
+We consider linear time-invariant dynamical systems (LDS) of the following form:
+\begin{eqnarray}
+\beta_{t+1} =  \beta_{t} + w_t\\
+r^p_t = r^I_t \beta_t + v_t
+\label{lds}
+\end{eqnarray}
+where $r^p_t, r^I_t$ are the fund's return, and the indices' return, respectively, at time $t$. The error term, $w_t, v_t$, are noramlly distributed with covariance matrices, $\Sigma$ and $\sigma$, respectively. Solving the state, $\beta_t$, correspond to the dynamic version to CAPM problem by Sharpe. 
+
+The goal of the problem is to determine $\PP(\beta_t | \{ r^p\}_1^{t})$ and $\PP(\beta_t | \{ r^p\}_1^{T})$. They are the solution to the filtering and smoothing problems, respectively. In this report, we assume normality on the error term. Since normal distribution is characterised by its mean and covariance, therefore it is enough to estimate the mean $\E(\beta_t | \{ r^p\}_1^{t})$ and $\Var(\beta_t | \{ r^p\}_1^{t})$.
+
+\begin{notation}
+\begin{eqnarray*}
+\beta_{t|\tau} := \E(\beta_t | \{ r^p \} ^ \tau _ 1 )\\
+V_{t|\tau} := \Var(\beta_t - \beta_{t|\tau} | \{ r^p \} ^ \tau _ 1 ) 
+\end{eqnarray*}
+\end{notation}
+
+
+\section{generic notation}
+\begin{equation}
+\begin{split}
+y_t &= X_t \beta_t + v_t\\
+\beta_{t+1} &= \Phi \beta_{t} + w_t\\
+G \beta_t &\geq g, \quad \forall t\\
+D \beta_t &= d, \quad \forall t
+\end{split}
+\end{equation}
+
+\begin{notation}
+\begin{equation*}
+\begin{split}
+\beta_{p|q} &:= \E(\beta_p |y^q_1 )\\
+V_{p|q} &:= \Var(\beta_p - \beta_{p|q} |y^q_1  ) 
+\end{split}
+\end{equation*}
+where $y^a_b = \{Y_t\}_{\forall t \in [a,b]}$ be the information collection of respond from time $a$ to $b$, inclusive.
+\end{notation}
+
+\section{Unconstrainted Kalman Filter}
+By Baye's Law, we have the following identity
+\begin{equation}
+\PP(\beta_t | y_1^t) = \frac{ \PP(y_t |  y^{t-1}_1, \beta_t) \PP ( \beta_t | y ^{t-1}_1)}{\PP(y_t |  y_1^{t-1})}.
+\label{baye}
+\end{equation}
+By (\ref{baye}), we have 
+\begin{equation}
+\begin{split}
+\log \PP(\beta_t |  y^t_1) &= \log \PP(\beta_t |  y^{t-1}_1, y_t)\\
+&= \log \PP(y_t |  y^{t-1}_1, \beta_t) + \log \PP ( \beta_t | y ^{t-1}_1) + \cdots\\
+&= \log \PP(y_t |  \beta_t) + \log \PP ( \beta_t | y ^{t-1}_1) + \cdots\\
+&= - \frac12 (y_t - X_t \beta_t )^T \sigma ^{-1}  (y_t - X_t \beta_t ) - \frac12 (\beta_t - \beta_{t|t-1})^T V_{t|t-1}^{-1} (\beta_t - \beta_{t|t-1})+ \cdots.
+\end{split}
+\end{equation}
+Grouping for $\beta_t$, we get
+\begin{equation}
+\begin{split}
+&= - \frac12 \beta^T_t (\frac1\sigma X^T X + V_{t|t-1}^{-1}) \beta_t + \beta^T_t ( \frac1\sigma X^T y_t + V_{t|t-1}^{-1} \beta_t^{t-1}) + \cdots.
+\end{split}
+\end{equation}
+
+Since the distribution is normal, it has the following eXpression:
+\begin{equation}
+\log \PP(\beta_t |  y^t_1) = -\frac12 z^T V_{t|t}^{-1} z + z^T ( V_{t|t}^{-1} \beta_{t|t}) + \cdots
+\end{equation}
+
+By comparison, we get
+\begin{equation}
+\log \PP(\beta_t |  y^t_1) = - \frac12\beta^T_{t|t} \underbrace{ (\frac1\sigma X^T X + V_{t|t-1}^{-1})}_{V_{t|t}^{-1}} \beta_{t|t} + \beta^T_{t|t} \underbrace{( \frac1\sigma X^T y_t + V_{t|t-1}^{-1} \beta_{t|t})}_{ (V_{t|t} ^{-1} \beta_{t|t})} + \cdots.
+\end{equation}
+
+or
+
+\begin{eqnarray}
+ V_{t|t} ^{-1}  =  (\frac1\sigma X_t^T X + (V_{t|t-1})^{-1}) \label{temp1}\\
+ (V_{t|t} ^{-1} \beta_{t|t}) = ( \frac1\sigma X_t^T y_t + (V_{t|t-1})^{-1} \beta_{t|t-1})
+\end{eqnarray}
+Before we proceed further, we need a lemma:
+\begin{lem}[MatriX Lemma]
+\begin{equation}
+(A+B)^{-1} = (I - (A+B)^{-1} A)B^{-1}
+\end{equation}
+\label{ml}
+\end{lem}
+\begin{proof}
+\begin{eqnarray*}
+(A+B)^{-1}(A+B) = I\\
+I - (A+B)^{-1} A = (A+B)^{-1} B\\
+(I- (A+B)^{-1} A) B^{-1} = (A+B)^{-1}
+\end{eqnarray*}
+\end{proof}
+
+Applying \ref{ml} to (\ref{temp1}), we get
+\begin{equation}
+\begin{split}
+V_{t|t} &= ( \frac1\sigma X_t^T X_t + V_{t|t-1}^{-1})^{-1}\\
+&=  V_{t|t-1} - K_t X_t V_{t|t-1}
+\end{split}
+\end{equation}
+where
+\[
+K_t = V_{t|t-1} X_t^T (\frac1\sigma + X_t V_{t|t-1} X_t )^{-1}.
+\]
+
+To find the time update for the variance, we use the fact that $\beta_{t-1}$ and $w_{t-1}$ are independent
+\begin{equation}
+\begin{split}
+\Var(\beta_t|y^t_1) &= V_{t|t-1} = \Var(\beta_{t-1}|y^t_1) + \Var(w_{t-1}|y^t_1)\\
+&= \Phi V_{t-1|t-1}\Phi ^T + \Sigma
+\end{split}
+\end{equation}
+Now the mean is
+\begin{equation}
+\begin{split}
+\beta_{t|t} &= V_{t|t} ( \frac1\sigma X_t^T y_t + V_{t|t-1}^{-1} \beta_{t|t-1})\\
+&= \frac1\sigma V_{t|t-1} X_t^T (I - (\sigma + X_t V_{t|t-1} X_t^T )^T X_t  V_{t|t-1} X_t^T) y_t+ (1-K_t X_t) \beta_{t|t-1}\\
+&= V_{t|t-1} X_t^T ( \frac1\sigma + X_t V_{t|t-1} X_t^T)^{-1} y_t + (1-K_t X_t) \beta_{t|t-1}\\
+&= K_t y_t + (I - K_t X_t) \beta_{t|t-1}\\
+&= \beta_{t|t-1}+ K_t (y_t - X_t \beta_{t|t-1}).
+\end{split}
+\end{equation}
+The time update for the mean can be found by conditioning on $\beta_{t-1}$
+\begin{equation}
+\begin{split}
+\beta_{t|t-1} =\Phi  \beta_{t-1|t-1}
+\end{split}
+\end{equation}
+The algorithm is the following:
+Given $\beta_{0|0}$, $V_{0|0}$, the Kalman filter algorithm is
+\begin{eqnarray}
+\beta_{t|t-1} = \Phi \: \beta_{t-1|t-1}\label{p1}\\
+V_{t|t-1} = \Phi  V_{t-1|t-1} \Phi ^T + \Sigma \label{p2}\\
+e_t = y_t -  X_t \beta_{t|t-1} \label{u1}\\
+K_t =  V_{t|t-1} X_t^T (\frac1\sigma + X_t V_{t|t-1} X_t )^{-1}\label{u4}\\
+\beta_{t|t} = \beta_{t|t-1} + K_t e_t\label{u2}\\
+V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\label{u3}\\
+\end{eqnarray}
+
+The equation (\ref{p1}, \ref{p1}) are the prediction equants, and the equations (\ref{u1}, \ref{u2}, \ref{u3},\ref{u4}) are updating equations.
+
+\begin{thm}[MLE]
+The Kalman filter estimate is the value of $\beta_{t|t-1}$ that maXimises the conditional probability density function.
+\[
+\PP(\beta_{t+1} | y_1^t) = \frac1{(2\pi)^\frac n2 |S|^{\frac12}} e^{-\frac12(\beta - \E \beta)^T S^{-1} (\beta - \E \beta)}
+\]
+\end{thm}
+where $n$ is the dimension of $\beta$ and 
+\[
+S = S_{\beta \beta} - S_{\beta y} S^{-1}_{y y} S_{y\beta }
+\] 
+\begin{proof}
+To be added
+\end{proof}
+
+
+\section{Kalman Filter with Equality constraints}
+
+Unconstrained Kalman Filter is an optimal method in all the affine function. However the algorithm does not feel the dynamic CAPM very nicely because CAPM has imposed two extra condition:
+\begin{equation}
+\begin{split}
+\sum_{i} \beta^i_t &= 1, \quad \forall t\\
+\beta &\geq 0, \quad \forall t
+\end{split}
+\label{constrain}
+\end{equation}
+
+Notice that the second constrain is commonly stated as $0 \leq \beta \leq 1$ in many liteture but that is implication of the first constraints above. 
+
+The first constraint (\ref{constrain}) can be generalised as the following 
+\[
+D \beta_t = d_t
+\]
+
+where $D$ is a known $s \times n$ constant matrix, $d_k$ is a know $s \times 1$ vector, $s$ is the number of constraints, and $n$ is the number of states. We can assume that $D$ is of full rank. If $D$ is not full rank, we can reduce the constraints to obtain full rank matrix.
+
+\subsection{The Maximum Probability Method}
+From the MLE theorem from last section, we know that Kalman filter estimate is the maximiser of the conditional probability. To that end, we can similarly derive the solution of constrained Kalman filter problem using the same creterion. Namely, we are solving the following problem
+\begin{equation}
+\begin{split}
+\max \: \ln \PP(\tilde{\beta_t} | \{y\}^t_1) = &\min (\tilde{\beta_t}  - \beta_{t|t})' \Sigma^{-1} (\tilde{\beta_t}  - \beta_{t|t})\\
+\text{s.t }&D\tilde{\beta_t} = d_t
+\end{split}
+\end{equation}
+This problem is a  simple application of Lagrangian Multiplier. Namely we define the Lagragian
+\[
+L = (\tilde{\beta_t}  - \E{\beta_t})' \Sigma^{-1} (\tilde{\beta_t}  - \E{\beta_t}) + 2 \lambda' (D\tilde{\beta_t} - d_t)
+\]
+
+Solution of this Lagrangian problem is 
+\begin{eqnarray}
+\lambda = (D S D')^{-1} ( D \beta_{t|t}- d)\\
+\tilde{\beta_t} = \beta_{t|t} - S D' ( D S D')^{-1} (D \beta_{t|t} - d)
+\end{eqnarray}
+\section{Kalman Filter with Inequality constraints}
+To coreprate in inequality constrain, we have to solve the following problem 
+
+\begin{equation}
+\begin{split}
+\max \: \ln \PP(\tilde{\beta_t} | \{y\}^t_1) = &\min (\tilde{\beta_t}  - \beta_{t|t})' \Sigma^{-1} (\tilde{\beta_t}  - \beta_{t|t})\\
+\mbox{subject to } & G\beta \geq 0 \\ & D\beta_t = d
+\end{split}
+\end{equation}
+
+Note that there is no analytical solution to this optimisation. However this is a standard type of quadratic programming and there are robust and efficient numerical package which can solve it.
+
+To this end, the equality/inequality constrained Kalman filter algorithm is the following
+
+\begin{equation}
+\begin{split}
+\beta_{t|t-1} &=\Phi \tilde{ \beta}_{t-1|t-1}\\
+V_{t|t-1} &= \Phi V_{t-1|t-1}\Phi^T  + \Sigma \\
+\min_{\tilde{\beta}} (\tilde{\beta_t}  - \beta_{t|t-1})' V_{t|t-1}^{-1} (\tilde{\beta_t}  - \beta_{t|t-1})&, \quad \mbox{subject to } G\tilde{\beta_t} \geq 0 ,D \tilde{\beta_t} = d\\
+e_t &= y_t -  X_t\tilde{ \beta}_{t|t-1} \\
+\beta_{t|t} &= \tilde{\beta}_{t|t-1} + K_t e_t\\
+V_{t|t} &= (I - K_t X_t^T) V_{t|t-1}\\
+K_t &=  V_{t|t-1} (X)^T (\frac1\sigma + X V_{t|t-1} X )^{-1}
+\end{split}
+\end{equation}
+
+
+\section{Kalman Smoother}
+Suppose we are given the Kalman Filter result, the Kalman Smoother solution is given by
+\begin{equation}
+\begin{split}
+V^-_{t+1|T} &= \Phi V_{t|T}\Phi  + \Sigma\\
+K_t &= V_{t|t} \Phi ({V_{t+1|t}^- })^{-T}\\
+\beta_{t|T} &= \beta_{t|t} + K_t [ \beta_{k+1|T} - \Phi \beta_{t|t}]\\
+V_{t|T} &= V_{t|t} + K_t [ V_{t+1|T} - V^-_{t+1|t}] K^T_t
+\end{split}
+\end{equation}
+starting from last time Step $T$, with $\beta_{T|T} = \beta_T$ and $V_{T|T} = V_{T}$.
+\section{Flexible Least Squares}
+
+Flexible least squares is an alternative way to solve the problem. Consider the system (\ref{lds}) from section 1. We assume that the $\beta_t$ vary in time. Since we do expect that the turnover of the state variable is small, we might impose a cost function on the dynamic of $\beta_t$. To that end, we have two cost functions we want to minimise, namely:
+\begin{equation}
+\begin{split}
+C_e(\beta_t) &= (r^p_t - r^I_t \beta_t)^T W_1 (r^p_t - r^I_t \beta_t)\\
+C_d(\beta_t) &= (\beta_{t} - \beta_{t-1} )^T W_2 (\beta_{t} - \beta_{t-1} )
+\end{split}
+\end{equation}
+where $C_e, C_d$ are the cost of estimation, and cost of dynamic, respectively. $W_1, W_2$ are the weight prespecified in the problem. The flexible least squares problem is to find a solution $\hat{\beta_t}, \forall t$. 
+
+Filtering problem with sequential solution:
+
+\begin{eqnarray}
+Q_t = \lambda {I - ([\lambda T + X_t^TX_t + Q_{t-1}]^{-1}\lambda I)}\\
+p_t = ([\lambda I + X_t^TX_t + Q_{t-1}] \lambda I)^T (X_t^T y + p_{t-1})\\
+r_t = r_{t-1} + y^T y - k_t ^T (\lambda I + X_t^TX_t + Q_{t-1})^{-1} k_t\\
+b_T = (y^T y + Q_{T-1})^{-1} ( y^T X_T + p_{T-1})
+\end{eqnarray}
+
+\section{Constrained Flexible Least Squares}
+In constraied FLS problem, we only consider the estimation problem with full history.
+
+To that end, the corresponding mathematical optimisation problem we are considering to solve is
+\begin{equation}
+\begin{split}
+\arg_{\beta_t,\forall t}\min\sum_{\forall t \text{ that make sense}} (y_t - X_t \beta_t)^T W_1 (y_t - X_t \beta_t) +& \lambda (\beta_{t+1} - \Phi \beta_t)^T W_2 (\beta_{t+1} - \Phi \beta_t)\\
+G \beta_t & \geq g, \quad \forall t\\
+D \beta_t & = d, \quad \forall t
+\end{split}
+\end{equation}
+
+To solve this, we can augment problem into a general quadratic programming form:
+First expand the first eqation into
+\[
+y_t^T W_1 y_t + \beta_t^T X_t^T W_1 X_t \beta_t - 2 y_t^T W_1 X_t \beta_t + 
+\lambda \beta_{t+1}^T W_2 \beta_{t+1} + \lambda \beta_t^T \Phi^T W_2 \Phi \beta_t -  \lambda \beta_{t+1}^T W_2 \Phi \beta_t -  \lambda \beta_{t}^T \Phi^T W_2  \beta_{t+1} -  \lambda \beta_{t+1}^T W^T_2\Phi   \beta_{t} 
+\]
+for each $t$.
+\begin{equation}
+\begin{split}
+\theta = \left[
+\begin{array}{c}
+\beta_{0}\\
+\vdots\\
+\beta_{T}
+\end{array}
+\right]
+\end{split}
+\end{equation}
+
+\begin{defn}[QP]
+\begin{eqnarray*}
+\mbox{minimize} & (1/2) \theta^TP\theta + q^T \theta \\
+\mbox{subject to} & G\theta \preceq h \\ & A\theta = b
+\end{eqnarray*}
+\end{defn}
+where
+
+\begin{equation}
+\begin{split}
+P_{1,1} &= 2(X_1^T W_1 X_1 + \lambda \Phi^T W_2 \Phi)\\
+P_{i,i} &= 2(X_i^T W_1 X_i + \lambda \Phi^T W_2 \Phi + \lambda W_2)\\
+P_{i, i+1} &= -2( \lambda \Phi^T W_2)\\
+P_{i+1, i} &= - 2(\lambda W_2 \Phi)\\
+q &= 
+-2\left[
+\begin{array}{c}
+W_1^T y_1\\
+W_1^T y_2\\
+\vdots\\
+W_1^T y_n
+\end{array}
+\right]\\
+G &= \left[
+\begin{array}{ccccc}
+-G&0&\cdots&0&0\\
+0&-G&0&0&0\\
+0&0&\ddots&0&0\\
+0&0&\cdots&-G&0\\
+0&0&\cdots&0&-G
+\end{array}
+\right]\\
+h &= 
+\left[
+\begin{array}{c}
+-g\\
+-g\\
+\vdots\\
+-g
+\end{array}
+\right]\\
+G &= \left[
+\begin{array}{ccccc}
+D&0&\cdots&0&0\\
+0&D&0&0&0\\
+0&0&\ddots&0&0\\
+0&0&\cdots&D&0\\
+0&0&\cdots&0&D
+\end{array}
+\right]\\
+h &= 
+\left[
+\begin{array}{c}
+d\\
+d\\
+\vdots\\
+d
+\end{array}
+\right]\\
+\end{split}
+\end{equation}
+
+
+\section{Model fitting}
+
+\appendix
+\section{Algorithm}
+
+\begin{algorithm}                      % enter the algorithm environment
+\caption{Kalman Filter}          % give the algorithm a caption
+\label{alg1}                           % and a label for \ref{} commands later in the document
+\algsetup{linenosize=\small,indent=1em}
+\begin{algorithmic}[1]
+\PROCEDURE kalman\_filter                  % enter the algorithmic environment
+The algorithm is the following:
+\REQUIRE $\beta_{0|0}$, $V_{0|0}$
+\begin{eqnarray*}
+\beta_{t|t-1} = \Phi \: \beta_{t-1|t-1}\label{p1}\\
+V_{t|t-1} = \Phi  V_{t-1|t-1} \Phi ^T + \Sigma \label{p2}\\
+e_t = y_t -  X_t \beta_{t|t-1} \label{u1}\\
+K_t =  V_{t|t-1} X^T (\frac1\sigma + X V_{t|t-1} X )^{-1}\label{u4}\\
+\beta_{t|t} = \beta_{t|t-1} + K_t e_t\label{u2}\\
+V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\label{u3}\\
+\end{eqnarray*}
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\end{document}
+
+\message{ !name(kalman_filter.tex) !offset(-451) }
+>>>>>>> 4d0b14d575a41508899ba775ac3e7e51840b9d6c:_region_.tex
