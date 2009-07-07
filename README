@@ -1,5 +1,3 @@
-This is a project for kalman filter
+This project was started to test different avaiable tools to track mutual funds and hedge fund using Capital Asset Pricing Model (CAPM thereafter) introduced my Sharpe and Arbitrage Pricing Theory (APT thereafter) introduced by Ross. The purpose of the CAPM model is to use a set of generic investable market indices to decompose the exposure of a fund. On the other hand, APT model is to find a set of generic indices which are not necessarily investable, to decompose the behaviour of an indices that we wish to analyse.
 
-I am going to organise it once i get used to github
-
-...
+The License for this project is GPLv2. 
