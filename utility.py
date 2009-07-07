@@ -18,6 +18,20 @@ def twoIterate(iterable, fcn, init = None):
     else:
         raise StopIteration
 
+def windows(iterable, length=2, overlap = 0):
+    it = iter(iterable)
+    results = list(itertools.islice(it,length))
+    while len(results) == length:
+        yield results
+        results = results[length - overlap:]
+        results.extend(itertools.islice(it, length-overlap))
+    if results:
+        yield results
+
+
+def mwindow(*iters, **keywords):
+    if not iters: raise TypeError('mwindow() expects one or more sequence arguments')
+    for i in windows(itertools.izip(*iters), keywords.get("length"), keywords.get("overlap")): yield map(list, itertools.izip(*i))
 
 if __name__ == "__main__":
     l = [1,2,3,4,5,6,7,8,9,10]
