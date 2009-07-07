@@ -1,7 +1,7 @@
 import csv,numpy
 from cvxopt import *
 from cvxopt.solvers import qp
-from timeSeriesFrame import *
+from TimeSeriesFrame import *
 from datetime import date
 DEBUG = 0
 

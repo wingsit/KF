@@ -1,6 +1,6 @@
 from Regression import Regression, ToBeImplemented
 import csv,numpy, scipy
-from timeSeriesFrame import *
+from TimeSeriesFrame import *
 from copy import deepcopy
 
 DEBUG = 0

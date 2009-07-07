@@ -1,7 +1,7 @@
 from ConstrainedKalmanFilter import *
 from Regression import Regression, ToBeImplemented
 import csv,numpy, scipy
-from timeSeriesFrame import *
+from TimeSeriesFrame import *
 from cvxopt.solvers import qp
 from cvxopt import *
 DEBUG = 0

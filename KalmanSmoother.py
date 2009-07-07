@@ -1,7 +1,7 @@
 from KalmanFilter import *
 from Regression import Regression, ToBeImplemented
 import csv,numpy, scipy
-from timeSeriesFrame import *
+from TimeSeriesFrame import *
 
 
 DEBUG = 0
