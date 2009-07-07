@@ -34,8 +34,6 @@ class ConstrainedKalmanSmoother(Regression):
 is not contrain-able, a <= \beta <= b"""
         self.a = a
         self.b = b
-#    def setConstraints(self, a, b):
-#        raise UnconstrainableError("This model does not accept constraint")
 
     def train(self):
         kf = ConstrainedKalmanFilter(self.Sigma, self.sigma, self.initBeta, self.initVariance, self.Phi, self.G, self.D, self.d )
@@ -43,7 +41,6 @@ is not contrain-able, a <= \beta <= b"""
         kf.setConstraints(self.a,self.b)
         kf.addData(self.respond, self.regressors)
         kf.train()
-#        print map(len, (kf.pbetaList, kf.pVList, kf.ubetaList, kf.uVList))
         sbetaList = [kf.ubetaList[-1]]
         sVList = [kf.uVList[-1]]
         T = len(kf.pbetaList)

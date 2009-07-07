@@ -1,8 +1,7 @@
+import csv,numpy
 from cvxopt import *
 from cvxopt.solvers import qp
-
 from timeSeriesFrame import *
-import csv,numpy
 from datetime import date
 DEBUG = 0
 
@@ -112,14 +111,7 @@ is not contrain-able, a <= \beta <= b"""
         """Simple R Squared by the definition on Wikipedia"""
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
-#        print sser,sstol, 1.0 - sser/sstol
         return  1.0 - sser/sstol
-
-
-
-
-
-
 
 
 def main():
@@ -135,11 +127,11 @@ def main():
     obj.setConstraints(zeros,ones)
     obj.addData(respond,regressor)
     obj.train()
-#    print obj.getEstimate(None)
-#    print obj.getEstimate(date(2001,1,1))
+    print obj.getEstimate(None)
+    print obj.getEstimate(date(2001,1,1))
     obj.est.toCSV("default2.csv")
-#    print obj.predict(date(2001,1,1))
-#    obj.getEstimate().toCSV()
+    print obj.predict(date(2001,1,1))
+    obj.getEstimate().toCSV()
     obj.R2()
 
 

@@ -1,4 +1,5 @@
 import sys, traceback
+
 def print_exc_plus():
     """Print the usual traceback information, followed by a listing of 
     all the local variables in each frame

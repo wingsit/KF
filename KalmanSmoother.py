@@ -33,7 +33,6 @@ class KalmanSmoother(Regression):
         kf.addData(self.respond, self.regressors)
         kf.intercept = self.intercept
         kf.train()
-#        print map(len, (kf.pbetaList, kf.pVList, kf.ubetaList, kf.uVList))
         sbetaList = [kf.ubetaList[-1]]
         sVList = [kf.uVList[-1]]
         T = len(kf.pbetaList)

@@ -202,7 +202,7 @@ Given $\beta_{0|0}$, $V_{0|0}$, the Kalman filter algorithm is
 \beta_{t|t-1} = \Phi \: \beta_{t-1|t-1}\label{p1}\\
 V_{t|t-1} = \Phi  V_{t-1|t-1} \Phi ^T + \Sigma \label{p2}\\
 e_t = y_t -  X_t \beta_{t|t-1} \label{u1}\\
-K_t =  V_{t|t-1} X_t^T (\frac1\sigma + X_t V_{t|t-1} X_t )^{-1}\label{u4}\\
+K_t =  V_{t|t-1} X_t^T (\sigma + X_t V_{t|t-1} X_t )^{-1}\label{u4}\\
 \beta_{t|t} = \beta_{t|t-1} + K_t e_t\label{u2}\\
 V_{t|t} = (I - K_t X_t^T) V_{t|t-1}\label{u3}\\
 \end{eqnarray}
@@ -284,7 +284,7 @@ V_{t|t-1} &= \Phi V_{t-1|t-1}\Phi^T  + \Sigma \\
 e_t &= y_t -  X_t\tilde{ \beta}_{t|t-1} \\
 \beta_{t|t} &= \tilde{\beta}_{t|t-1} + K_t e_t\\
 V_{t|t} &= (I - K_t X_t^T) V_{t|t-1}\\
-K_t &=  V_{t|t-1} (X)^T (\frac1\sigma + X V_{t|t-1} X )^{-1}
+K_t &=  V_{t|t-1} (X)^T (\sigma + X V_{t|t-1} X )^{-1}
 \end{split}
 \end{equation}
 
@@ -303,7 +303,7 @@ now
 &=\frac{\PP(Y_t)}{\PP(y_1^t)} \PP(\beta_t, \beta_{t+1}, y_{t+1}, \cdots, y_T|y_1^t)\\
 &=\frac{\PP(Y_t)}{\PP(y_1^t)} \PP(y_{t+1}, \cdots, y_T|y_1^t)\PP(\beta_t, \beta_{t+1}|y_1^t)
 \end{split}
-\end{equation}
+\end{equation*}
 But
 \[
 \PP(y_{t+1}, \cdots, y_T | \beta_{t}, \beta_{t+1}, y_1^t) = \PP(y_{t+1}, \cdots, y_T | \beta_{t+1}),
