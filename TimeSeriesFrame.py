@@ -26,6 +26,7 @@ class DataException(DataframeException):
         self.text = text
     def __str__(self):
         return repr(self.text)
+    
 class ToBeImplemented(DataframeException):
     def __init__(self):
         print "Not yet implmented"
@@ -105,6 +106,7 @@ class TimeSeriesFrame(Dataframe):
         stock[date]
         """
         def getIndex(l, key):
+#            for i in l: print i
             if key == None:
                 return None
             try:
@@ -298,8 +300,8 @@ if __name__ =="__main__":
         print stock[date(2001,1,1):date(2002,1,1)]
     except:
         pass
-    print "stock[date(2001,1,1):date(2002,1,1),:]"
-    print stock[date(2001,1,1):date(2002,2,1),:]
+    print "stock[date(2001,1,1):date(2002,3,1),:]"
+    print stock[date(2001,1,1):date(2002,3,1),:]
 
     try: print stock[date(2001,1,1):date(2002,1,1),1:6]
     except: print "stock[date(2001,1,1):date(2002,1,1),1:6]"
