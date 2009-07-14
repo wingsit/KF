@@ -19,8 +19,8 @@ class Regression(object):
         if self.intercept:
             self.regressors.data = scipy.hstack((scipy.ones((self.t,1)), self.regressors.data))
             self.regressors.cheader.insert(0,"Intercept")
+            self.n = self.n + 1
         self.X, self.y, self.W = map(scipy.matrix, (self.regressors.data, self.respond.data, self.weight))
-
         
     def train(self):
         if DEBUG:
@@ -31,47 +31,38 @@ class Regression(object):
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
 
-
     def getEstimate(self, date = None):
         """Return the estimate of the regression"""
         if date is None: return self.est
         else: return self.est[date]
 
-    def isSCConstraintable(self):
-        """Boolean function to see if contraints can be imposed to the model. Default is True"""
+    def isECConstraintable(self):
+        """Boolean function to see if equality contraints can be imposed to the model. Default is True"""
         return False
 
     def isICConstraintable(self):
-        """Boolean function to see if contraints can be imposed to the model. Default is True"""
+        """Boolean function to see if inequality and equality contraints can be imposed to the model. Default is True"""
         return False
-
 
     def predict(self, time = None):
         """This function take the (list of) date and return prediction in a timeseriesframe"""
-
 #        print self.X * self.est.data[0].T
         pre = TimeSeriesFrame( (self.X * self.est.data[0].T).sum(axis= 1), self.respond.rheader, self.respond.cheader)
-        if time is None:
-            return pre
-        elif isinstance(time, date):
-            return pre[time]
-        else:
-            raise TypeError("time is not in datetime.date format")
+        if time is None: return pre
+        elif isinstance(time, date): return pre[time]
+        else: raise TypeError("time is not in datetime.date format")
 
     def error(self, time = None):
         newts = copy(self.respond)
         newts.data = newts.data - self.predict().data
-        if time:
-            return newts[time]
-        else:
-            return newts
+        if time: return newts[time]
+        else: return newts
 
     def R2(self):
         """Simple R Squared by the definition on Wikipedia"""
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
         return  1.0 - sser/sstol
-
 
 def main():
     stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))

@@ -1,33 +1,47 @@
-import csv,numpy
+import csv,numpy, scipy
 from cvxopt import *
 from cvxopt.solvers import qp
 from TimeSeriesFrame import *
 from datetime import date
+from scRegression import SCRegression
+from exc import *
 DEBUG = 0
 
-class ToBeImplemented(Exception):
-    def __init__(self):
-        print "Why dont you implement it?"
 
-class Regression(object):
+class ICRegression(SCRegression):
     """ This is an abstruct class for Regression Type of problem."""
-    def __init__(self, weight = None, **args):
+    def __init__(self, respond = None, regressors = None, intercept = False,D = None, d = None, G = None, lower = None, upper = None, **args):
         """Input: paras where they are expected to be tuple or dictionary"""
-        self.paras = args.get("paras")
-        pass
-
-    def addData(self, respond, regressors):
-        """This function will add data to the object"""
-        self.respond = respond
-        self.regressors = regressors        
-        pass
-    def setConstraints(self, a, b):
-        """setConstraints for the constrained regression problem. The constrains are ignored when the regression
-is not contrain-able, a <= \beta <= b"""
+        SCRegression.__init__(self.respond, regressors, intercept, D, d, **args)
+        if (G or lower or upper) or not (G and lower and upper):
+            print "G, lower, and upper must either all non-empty or all empty"
+            raise InputException
+        
         if self.intercept:
-            self.h = matrix([matrix(0.0),-matrix(a),matrix(0.0),matrix(b)]) # set constraints
+            self.h = matrix([matrix(0.0),-matrix(lower),matrix(0.0),matrix(upper)]) # set constraints
+            self.G = scipy.iden(self.n+1)                 # This should be extended in a future.
+            self.G[0,0] = 0
         else:
-            self.h = matrix([-matrix(a),matrix(b)]) # set constraints
+            self.h = matrix([-matri(lower),matrix(upper)]) # set constraints
+            self.G = scipy.iden(self.n)                 # This should be extended in a future.
+
+
+
+
+
+#     def addData(self, respond, regressors):
+#         """This function will add data to the object"""
+#         self.respond = respond
+#         self.regressors = regressors        
+#         pass
+
+#     def setConstraints(self, a, b):
+#         """setConstraints for the constrained regression problem. The constrains are ignored when the regression
+# is not contrain-able, a <= \beta <= b"""
+#         if self.intercept:
+#             self.h = matrix([matrix(0.0),-matrix(a),matrix(0.0),matrix(b)]) # set constraints
+#         else:
+#             self.h = matrix([-matrix(a),matrix(b)]) # set constraints
 
     def train(self):
         """This fucntion will start the estimation. This is separated from addData."""
@@ -103,10 +117,9 @@ is not contrain-able, a <= \beta <= b"""
                 beta = numpy.array(self.getEstimate(date).data)
                 return TimeSeriesFrame(scipy.matrix((beta*data).sum(axis = 1)), date, self.respond.cheader)
     
-    def withIntercept(self, setting = True):
-        self.intercept = setting
-        pass
-
+#     def withIntercept(self, setting = True):
+#         self.intercept = setting
+#         pass
     def R2(self):
         """Simple R Squared by the definition on Wikipedia"""
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
@@ -115,17 +128,20 @@ is not contrain-able, a <= \beta <= b"""
 
 
 def main():
-    obj = Regression(data = 10, paras = (10, 100))
+#    obj = Regression(data = 10, paras = (10, 100))
     stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
     stock = StylusReader(stock_data)
     respond = stock[:,0]
-    regressor = stock[:,1:]
+    regressors = stock[:,1:]
     zeros = numpy.zeros((2,1))
     ones = numpy.ones((2,1))
+    
+    
 
-    obj.withIntercept(False)
-    obj.setConstraints(zeros,ones)
-    obj.addData(respond,regressor)
+#    obj.withIntercept(False)
+    obj = ICRegression(respond, regressors, False, None, None, None, zeros, ones)
+#    obj.setConstraints(zeros,ones)
+#    obj.addData(respond,regressor)
     obj.train()
     print obj.getEstimate(None)
     print obj.getEstimate(date(2001,1,1))
@@ -140,4 +156,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+   main()
