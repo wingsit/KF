@@ -1,7 +1,7 @@
 import csv,numpy, scipy
 from cvxopt import *
 from cvxopt.solvers import qp
-from TimeSeriesFrame import *
+from timeSeriesFrame import *
 from datetime import date
 from regression import Regression
 from exc import *
@@ -25,7 +25,16 @@ class ECRegression(Regression):
         pass
 
     def train(self):
-        beta =  self.D * (self.X.T * self.W * self.X).I * self.D.T *(self.D* self.X.T * self.W * self.y-self.d) # will optimise it one day.... but this is not too slow
+        if DEBUG:
+            print "X: ", self.X
+            print "W: ", self.W
+            print "y: ", self.y
+            print "D: ", self.D
+            print "d: ", self.d
+        covinv = (self.X.T * self.W * self.X).I
+        lamb = (self.D * covinv * self.D.T).I * (self.D * covinv * self.X.T * self.W * self.y - self.d)
+        beta = covinv * (self.X.T * self.W * self.y - self.D.T * lamb)
+        print beta
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
 
@@ -40,11 +49,12 @@ def main():
     regressors = stock[:,1:]
     t,n = regressors.size()
     weight = scipy.identity(t)
-    D = scipy.ones((3,1))
+    D = scipy.ones((1,2))
     d = scipy.matrix(1.0)
-    intercept = True
+    intercept = False
     obj = ECRegression(respond, regressors, intercept, D,d,weight = weight)
     obj.train()
+    print obj.getEstimate()
     print obj.predict()
 #    print obj.predict(date(1999,1,1))
     print obj.error()
