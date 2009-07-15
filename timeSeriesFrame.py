@@ -37,7 +37,7 @@ class ToBeImplemented(DataframeException):
 class Dataframe:
     """This is the base frame that holds flat 2 dimensional data"""
     def __init__(self, data = None, columnList = None, rowList = None, rown = None, coln = None):
-        self.data = data
+        self.data = scipy.matrix(data)
         if not rowList: self.rowHeader(rowList)
         if not columnList: self.columnHeader(columnList)
         pass

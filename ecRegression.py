@@ -43,13 +43,13 @@ class ECRegression(Regression):
 
 
 def main():
-    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
     stock = StylusReader(stock_data)
     respond = stock[:,0]
     regressors = stock[:,1:]
     t,n = regressors.size()
     weight = scipy.identity(t)
-    D = scipy.ones((1,2))
+    D = scipy.ones((1,7))
     d = scipy.matrix(1.0)
     intercept = False
     obj = ECRegression(respond, regressors, intercept, D,d,weight = weight)
@@ -59,6 +59,7 @@ def main():
 #    print obj.predict(date(1999,1,1))
     print obj.error()
     print obj.R2()
+    obj.getEstimate().toCSV()
     pass
 
 if __name__ == "__main__":
