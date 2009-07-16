@@ -32,7 +32,7 @@ regression.py imposes no state constraints on the model
 ec*.py imposes Equality Constraints on the model. For example, ecRegression.py is a regression model which must satisfy Equality Constraitns.
 ic*.py imposes Inequality Constraints and Equality Constraints. For example icRegression.py is a constrained regression model which has both equality and inequality constraints.
 
-Organisation: Most of the resuable estimation formulae are written in algorithm.py except when it is called from external library.
+Organisation: Most of the reusable estimation formulae are written in libregression.py except when it is called from external library.
 
 Implemented and Tested:
 regression.py
