@@ -9,14 +9,37 @@ Scipy (http://www.scipy.org/)
 Numpy (http://numpy.scipy.org/)
 CVXOPT (http://abel.ee.ucla.edu/cvxopt/)
 
-The primary data structure is DataFrame in timeSeriesFrame.py although this is not used directly. The container for time series data is TimeSeriesFrame which are used by Regression.
+The primary data structure is DataFrame in timeSeriesFrame.py although this is not used directly. The container for time series data is TimeSeriesFrame which are used by Regression. Essentially, this is just a data structure with a scipy.matrix for tabular data and 2 lists which contains row and column header information. Later in the future I might change it it numpy.maskedarray to handle missing. The primary features for TimeSeriesFrame are simple slicing and iterators in both dimensions. This was designed in a way such that it is easy to run operation on each time series or each date. Later I might subclass it with http://scikits.appspot.com/scikits but this is not in near future.
 
-Regression is a base class for all the estimation procedures. Itself is implemented as constrained regression with all data (This should be chagned very soon). To implement other procedures, sub-class Regression and overwrite all the functions in it.
+Regression is a base class for all the estimation procedures. It is implemented as basic linear least squares estimation. Primary sub-classes of Regression is ECRegression and ICRegression which are base-class for equality and inequality constrained model, respectively. Sample library usage is 
+
+>>>    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb"))) #Read data from file
+>>>    stock = StylusReader(stock_data) #Put the data into TimeSeriesFrame
+>>>    respond = stock[:,0] #slice the first column of TimeSeriesFrame as respond
+>>>    regressors = stock[:,1:] #slice the columns after first column as regressors
+>>>    t,n = regressors.size()
+>>>    weight = scipy.identity(t) 
+>>>    intercept = True
+>>>    obj = Regression(respond, regressors, intercept, weight = weight) #Initialise the regression object, construct all the necessary matrix according to the value of intercept and settings
+>>>    obj.train() #perform estimation. In this case it is simple matrix calculation and inversion.
+>>>    print obj.predict()  #Return the estimate in TimeSerisFrame
+>>>    print obj.error() #Return the estimation error in TimeSeriesFrame
+
+Essentially, users only need to run the constructor and train() to get the estimate. It was designed to be very simple to use for end users.
+
+Naming Convention:
+regression.py imposes no state constraints on the model
+ec*.py imposes Equality Constraints on the model. For example, ecRegression.py is a regression model which must satisfy Equality Constraitns.
+ic*.py imposes Inequality Constraints and Equality Constraints. For example icRegression.py is a constrained regression model which has both equality and inequality constraints.
+
+Organisation: Most of the resuable estimation formulae are written in algorithm.py except when it is called from external library.
 
 Implemented and Tested:
-Regression
+regression.py
+ecRegression.py
+icRegression.py
 
-Implemented:
+Experimenting:
 KalmanFilter
 ConstrainedKalmanFilter
 KalmanSmoother

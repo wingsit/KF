@@ -5,6 +5,7 @@ from timeSeriesFrame import *
 from datetime import date
 from regression import Regression
 from exc import *
+from libregression import ecregression
 DEBUG = 0
 
 
@@ -31,10 +32,11 @@ class ECRegression(Regression):
             print "y: ", self.y
             print "D: ", self.D
             print "d: ", self.d
-        covinv = (self.X.T * self.W * self.X).I
-        lamb = (self.D * covinv * self.D.T).I * (self.D * covinv * self.X.T * self.W * self.y - self.d)
-        beta = covinv * (self.X.T * self.W * self.y - self.D.T * lamb)
-        print beta
+##        covinv = (self.X.T * self.W * self.X).I
+##        lamb = (self.D * covinv * self.D.T).I * (self.D * covinv * self.X.T * self.W * self.y - self.d)
+##        beta = covinv * (self.X.T * self.W * self.y - self.D.T * lamb)
+        beta = ecregression(self.X, self.y, self.W, self.D, self.d)
+#        print beta
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
 
