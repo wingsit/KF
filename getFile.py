@@ -1,12 +1,13 @@
 import os.path
-from FormatConverter import *
+from formatConverter import *
 import timeSeriesFrame
 
 extmap = {'.csv':1, '.txt':2, '.xls':3, '.sql':4}
-dir = "C:\Documents and Settings\MARY\My Documents\Test\Data"
+dir = "C:\Documents and Settings\Leonsit\My Documents\MyPy\rewrite"
 
 #Conversion function
 def doConv(file, id):
+    """jdpwjdpw"""
     f = FormatConverter(file)       #creates a FormatConverter object for the file
 
     #reads in file with correct function
