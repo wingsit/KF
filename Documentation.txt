@@ -1,0 +1,74 @@
+Documentation:
+
+1: getFile.py
+
+requires no input
+**__main__ module**
+requires:
+	os module
+	FormatConverter.py
+searches for files in directory (current is "My Documents on my computer")
+creates instances of FormatConverter class
+converts to other types 
+
+output: prints file names that it converts (none as of now)
+
+doConv(file, id)
+	file: path name
+	id: file type according to map
+
+
+2: FormatConverter.py
+
+requires no input
+class definition for framework of file conversion
+
+requires:
+	os module
+	parseFramework.py
+
+class FormatConver
+	functions:
+		__init__(self, path)
+			path --> self.path
+		
+		readCSV(self)
+			reads CSV file from "path" to list
+		
+		readTXT(self)
+			reads TXT file from "path" to list
+		
+		readXLS(self)
+			reads XLS file from "path" to list
+		
+		readSQL(self)
+			reads SQL file from "path" to list
+		
+		__fix(self)
+			formats data in __data
+		
+		toCSV(self)
+			writes CSV file from list as file "path".csv
+		
+		toTXT(self)
+			writes TXT file from list as file "path".txt
+
+		toXLS(self)
+			writes XLS file from list as file "path".xls
+
+		toSQL(self)
+			writes SQL file from list as file "path".sql
+		
+	data:
+		path : path to file
+		__data : list of data read in
+
+
+3: parseFramework.py
+
+requires no input
+requires:
+	xlwt module
+	split function from string module
+parse dates and format correctly
+no output3:32 PM 7/13/2009
