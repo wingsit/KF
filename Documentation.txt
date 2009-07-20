@@ -13,7 +13,7 @@ converts to other types
 
 output: prints file names that it converts (none as of now)
 
-doConv(file, id)
+__doConv(file, id)
 	file: path name
 	id: file type according to map
 
