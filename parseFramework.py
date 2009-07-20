@@ -3,6 +3,9 @@ from xlwt import *
 from string import split
 from datetime import date
 
+
+
+
 #Empty cell error
 class EmptyCellException(Exception):
     """Attempt to modify empty cell"""
@@ -64,8 +67,8 @@ def getDateType(date):
     else:
         return 1
 
+#Algorithm common to both data types
 def toDate(mon, yr):
-    
     #Parse month
     newMon = monthMapper(mon)
 

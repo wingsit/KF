@@ -9,8 +9,10 @@ class ToBeImplemented(Exception):
 
 class FormatConverter:
     def __init__(self, path):
+        """Input: string path representing name of the file"""
+        
         self.path = path
-        self.__data = []          ##Intermediate list for conversion/manipulation
+        self.__data = []          #Intermediate list for conversion/manipulation
 
 
     #import csv file to list and modify to format correctly
@@ -65,9 +67,7 @@ class FormatConverter:
 
         print self.__data
         self.path = "tsfData.tsf"
-                
 
-##        self.__fix()
 
     #function for formatting data in the list (for all file types)
     def __fix(self):
@@ -82,18 +82,22 @@ class FormatConverter:
                 continue
             x[0] = dateparse(date)
 
-    #
-    #data conversion to individual file types
-    #-->
+    """
+    data conversion to individual file types
+    -->"""
     
+    #write the list to a csv file
     def toCSV(self):
         raise ToBeImplemented
-
+    #write the list to a txt document
     def toTXT(self):
         raise ToBeImplemented
 
     #write the list to an excel document
     def toXLS(self):
+        """Input: none
+        Output: Excel document in current directory; no written output"""
+
         w = Workbook()
         ws = w.add_sheet('D & C')
 
@@ -110,10 +114,15 @@ class FormatConverter:
 
         w.save(os.path.splitext(self.path)[0] + '.xls')
 
+    #write the list to a sql document
     def toSQL(self):
         raise ToBeImplemented
 
+    #write the list to a timeSeriesFrame object
     def toTSF(self):
+        """Input: none
+        Output: TimeSeriesFrame object; no written output"""
+
         c = self.__data.pop(0)[1:]
         self.__data = map(list, zip(*self.__data))
         r = self.__data.pop(0)
