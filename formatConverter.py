@@ -3,7 +3,7 @@ import os
 import timeSeriesFrame
 import scipy
 
-class ToBeImplemented(Exception):
+class ToBeImplemented(Exception): #please add exception to exc.py
     def __init__(self):
         print "Not yet implmented"
 
@@ -55,6 +55,9 @@ class FormatConverter:
         cheader = self.path.cheader
         cheader.insert(0, "")
         self.__data.append(cheader)
+
+        #I think that scipy.matrix has a tolist() function which is more efficient
+        #something liek self.__data = self.__data.tolist()
         for i in self.path.data:
             row = []
             for j in i.tolist():
@@ -65,8 +68,8 @@ class FormatConverter:
         for n, i in enumerate(self.path.rheader):
             self.__data[n + 1].insert(0, i)
 
-        print self.__data
-        self.path = "tsfData.tsf"
+        print self.__data #User should have option to turn this off
+        self.path = "tsfData.tsf" #What is this?
 
 
     #function for formatting data in the list (for all file types)
@@ -99,9 +102,9 @@ class FormatConverter:
         Output: Excel document in current directory; no written output"""
 
         w = Workbook()
-        ws = w.add_sheet('D & C')
+        ws = w.add_sheet('D & C') #this should handle variable name. dodge_cox is just test data
 
-        datefmt = 'M/D/YY'
+        datefmt = 'M/D/YY' #Should not be hardcoded
         style = XFStyle()
         style.num_format_str = datefmt
 
@@ -127,6 +130,7 @@ class FormatConverter:
         self.__data = map(list, zip(*self.__data))
         r = self.__data.pop(0)
         for i in xrange(len(self.__data)):
-            self.__data[i] = map(float, self.__data[i])
-        self.__data = scipy.transpose(scipy.matrix(self.__data))
+            self.__data[i] = map(float, self.__data[i]) #shouldnt the data always be in float?
+#        self.__data = scipy.transpose(scipy.matrix(self.__data))
+        self.__data = scipy.matrix(self.__data).T
         return timeSeriesFrame.TimeSeriesFrame(self.__data, r, c)

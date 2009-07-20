@@ -61,19 +61,8 @@ def main():
         >>> 2009-04-01	  1.45468990e+01   1.40000000e-02   8.50790000e+00, ...,  14.2105  15.8674  15.0506, 
         >>> 2009-05-01	 7.4948    0.016014  7.2891  , ...,  5.1685  2.1622  3.8719, 
         """
-    
-##    def callback( arg, dirname, fnames ):
-##        for file in fnames:
-##            ext = os.path.splitext(file)[1] #parses file's extension
-##            if ext in extmap:
-##                print file
-##                __doConv(file, extmap[ext])
-##
-##    arglist = []
-##    os.path.walk(dir,callback,arglist)
     __doConv("csvDC.csv", 1)
 
-    
 if __name__ =="__main__":
     main()
 
