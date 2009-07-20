@@ -4,8 +4,8 @@ from timeSeriesFrame import *
 from datetime import date
 from ecRegression import ECRegression
 from exc import *
-DEBUG = 1
-
+from libregression import icregression
+DEBUG = 0
 
 class ICRegression(ECRegression):
     """ This is an abstruct class for Regression Type of problem."""
@@ -32,7 +32,6 @@ class ICRegression(ECRegression):
         else:
             self.a = a
             self.b = b
-        pass
 
     def train(self):
         if DEBUG:
@@ -44,28 +43,29 @@ class ICRegression(ECRegression):
             print "G: ", self.G
             print "a: ", self.a
             print "b: ", self.b
+        beta = icregression(self.X, self.y, self.W, self.D, self.d, self.G,
+                            self.a, self.d, self.n)
+#         P = 2*self.X.T * self.W * self.X
+#         q = -2*self.X.T * self.W * self.y
+#         bigG = scipy.empty((2*self.n, self.n))
+#         h = scipy.empty((2*self.n, 1))
+#         bigG[:self.n, :] = -self.G
+#         bigG[self.n:, :] = self.G
+#         h[:self.n, :] = -self.a
+#         h[self.n:, :] = self.b
 
-        P = 2*self.X.T * self.W * self.X
-        q = -2*self.X.T * self.W * self.y
-        bigG = scipy.empty((2*self.n, self.n))
-        h = scipy.empty((2*self.n, 1))
-        bigG[:self.n, :] = -self.G
-        bigG[self.n:, :] = self.G
-        h[:self.n, :] = -self.a
-        h[self.n:, :] = self.b
-
-        if DEBUG:
-            print "P: ",P
-            print "q: ",q
-            print "bigG: ",bigG
-            print "h: ",h
-            print "D: ", self.D
-            print "d: ", self.d
-        paraset = map(cvxopt.matrix , (P,q,bigG,h,self.D,self.d))
-        beta = qp(*paraset)['x']
+#         if DEBUG:
+#             print "P: ",P
+#             print "q: ",q
+#             print "bigG: ",bigG
+#             print "h: ",h
+#             print "D: ", self.D
+#             print "d: ", self.d
+#         paraset = map(cvxopt.matrix , (P,q,bigG,h,self.D,self.d))
+#         beta = qp(*paraset)['x']
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
-
+        return self
 
     def isECConstraintable(self): return True
 
@@ -83,8 +83,7 @@ def main():
     a = scipy.zeros((7,1))
     b = scipy.ones((7,1))
     G = scipy.identity(n)
-    obj = ICRegression(respond, regressors, intercept, D,d,G,a,b,weight = weight)
-    obj.train()
+    obj = ICRegression(respond, regressors, intercept, D,d,G,a,b,weight = weight).train()
     print obj.getEstimate()
     print obj.predict()
 #    print obj.predict(date(1999,1,1))

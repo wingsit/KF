@@ -1,6 +1,5 @@
 import scipy, itertools
 
-
 def windows(iterable, window, overlap):
     if not isinstance(iterable, scipy.matrix):
         iterable = list(iterable)
@@ -9,6 +8,7 @@ def windows(iterable, window, overlap):
     while i <=len(iterable)-window:
         yield iterable[i:i+window]
         i += diff
+
 def fullRollingWindows(iterable, window, overlap):
     if not isinstance(iterable, scipy.matrix):
         iterable = list(iterable)
@@ -22,6 +22,19 @@ def fullRollingWindows(iterable, window, overlap):
         else: 
             yield iterable[i:i+window]
         i += diff
+
+def headRollingWindows(iterable, window, overlap):
+    if not isinstance(iterable, scipy.matrix):
+        iterable = list(iterable)
+    i = -overlap
+    diff = window - overlap
+    while i <=len(iterable)-window:
+        if i < 0:
+            yield iterable[:window]
+        else: 
+            yield iterable[i:i+window]
+        i += diff
+
 
 def main():
     l = xrange(0,30)

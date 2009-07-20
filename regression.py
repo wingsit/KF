@@ -32,6 +32,7 @@ class Regression(object):
 #        beta =  (self.X.T * self.W * self.X).I*(self.X.T * self.W * self.y) # will optimise it one day.... but this is not too slow
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
+        return self
 
     def getEstimate(self, date = None):
         """Return the estimate of the regression"""
