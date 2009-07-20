@@ -38,18 +38,19 @@ Implemented and Tested:
 regression.py
 ecRegression.py
 icRegression.py
+rollingRegression.py
+ecRollingRegression.py
+icRollingRegression.py
 
 Experimenting:
 KalmanFilter
 ConstrainedKalmanFilter
 KalmanSmoother
-ConstrainedKalmanSmoother
+ConstrainedKalman
 
 To Do:
 Flexible Least Squares
 Constrained Flexible Least Squares
-Rolling locally Weighted Regression with
-Rolling locally Weighted Regression with Constraints
 Calibration Procedures
 Testing Suite
 Statistical Functions for TimeSeriesFrame and DataFrame
