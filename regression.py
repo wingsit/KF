@@ -75,6 +75,8 @@ def main():
     t,n = regressors.size()
     weight = scipy.identity(t)
     intercept = True
+    print respond.size()
+    print regressors.size()
     obj = Regression(respond, regressors, intercept, weight = weight)
     obj.train()
     print obj.predict()

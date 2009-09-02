@@ -1,7 +1,7 @@
 from parseFramework import *
 import os
 import timeSeriesFrame
-import scipy
+import scipy, sys
 
 class ToBeImplemented(Exception): #please add exception to exc.py
     def __init__(self):
@@ -14,12 +14,17 @@ class FormatConverter:
         self.path = path
         self.__data = []          #Intermediate list for conversion/manipulation
 
+    def __str__(self):
+        string = ""
+        for d in self.__data:
+            string+=("d"+"\n")
+        return string
 
     #import csv file to list and modify to format correctly
     def readCSV(self):
-        self.__data = list(csv.reader(open(self.path, "rb")))
-        
+        self.__data = list(csv.reader(open(self.path, "rb")))        
         self.__fix()
+        return self
         
     #import txt file to list and modify to format correctly    
     def readTXT(self):
@@ -37,19 +42,20 @@ class FormatConverter:
                     x.append(new)
 
         self.__fix()
+        return self
 
     #import xls file  to list and modify to format correctly    
     def readXLS(self):
         raise ToBeImplemented
         
         self.__fix()
-
+        return self
     #import sql file to list and modify to format correctly  
     def readSQL(self):
         raise ToBeImplemented
         
         self.__fix()
-
+        return self
     #import a timeSeriesFrame object and create a list from it
     def readTSF(self):
         cheader = self.path.cheader
@@ -70,7 +76,7 @@ class FormatConverter:
 
         print self.__data #User should have option to turn this off
         self.path = "tsfData.tsf" #What is this?
-
+        return self
 
     #function for formatting data in the list (for all file types)
     def __fix(self):
