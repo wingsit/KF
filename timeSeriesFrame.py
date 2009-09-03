@@ -42,11 +42,33 @@ class Dataframe:
         if not columnList: self.columnHeader(columnList)
         pass
     def __str__(self):
-        for i in self.data[:3]:
-            print i
-        print "............................"
-        for i in self.data[-3:]:
-            print i
+        data = self.data.tolist()
+#        print data
+        def hellipsis(li):
+            string = ""
+            if len(li) > 6:
+                for i in li[:3]:
+                    string += (str(i)+"\t")
+                string += "..."
+                for i in li[-3:]:
+                    string += ("\t"+str(i))
+                return string
+            else:
+                for i in li:
+                    string += (str(i)+"\t")
+                return string
+            
+        string = ""
+        for i in data:
+            string+=(hellipsis(i)+"\n")
+        return string
+
+
+
+    
+    def size(self):
+        return scipy.shape(self.data)
+            
     def rowHeader(self, headerList):
         try:
             self.rheader = list(headerList)
@@ -72,6 +94,9 @@ class Dataframe:
             csvReader.writerow(i)
         del csvReader
 
+    def __len__(self):
+        """Return number of time series it has"""
+        return len(self.rheader)
 
 
 ## Class for TimeSeriesFrame derived from Dataframe ##
@@ -92,10 +117,6 @@ class TimeSeriesFrame(Dataframe):
         if coln and columnList == None:
             self.columnHeader(map(str, range(len(self.data[0]))))
         
-    def __len__(self):
-        """Return number of time series it has"""
-        return len(self.rheader)
-
     def __getitem__(self, key):
         """Valid Syntax
         stock[:,1],
@@ -223,8 +244,7 @@ class TimeSeriesFrame(Dataframe):
         except:
             raise RowHeaderExcpetion
 
-    def size(self):
-        return scipy.shape(self.data)
+
 
     def columnIterator(self):
         """ This is a generator to iterate across different time series"""
@@ -285,6 +305,8 @@ def windows(iterable, length=2, overlap = 0):
 if __name__ =="__main__":
     stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
     print stock_data
+    import code; code.interact(local=locals())
+
 #    lipper_data = list(csv.reader(open("t_lipper_daily.csv", "rb")))    
     stock = StylusReader(stock_data)
     #stock.StylusReader(stock_data)
