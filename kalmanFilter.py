@@ -2,9 +2,10 @@ from regression import Regression, ToBeImplemented
 import csv,numpy, scipy
 from timeSeriesFrame import *
 from copy import deepcopy
+from libregression import kalman_predict, kalman_upd
 
 DEBUG = 0
-kappa = 1000
+kappa = 1
     
 class KalmanFilter(Regression):
     """This is a KalmanFilter Class subclassed from Regression"""
@@ -13,13 +14,13 @@ class KalmanFilter(Regression):
                  Sigma = None, sigma = None, initBeta = None, initVariance = None, Phi = None,  **args):
         """Input: paras where they are expected to be tuple or dictionary"""
         Regression.__init__(self,respond, regressors, intercept, **args)
-        if (not initBeta) and self.intercept:
+        if ( initBeta is None) and self.intercept:
             self.initBeta = scipy.ones((self.n,1))/float(self.n-1)
             self.initBeta[0] = 0
         elif initBeta and self.intercept:
             self.initBeta = scipy.ones((n,1))/float(n)
-        elif (not initBeta) and (not self.intercept):
-            self.initBeta = initBeta
+        elif (initBeta is None) and (not self.intercept):
+            self.initBeta = scipy.ones((self.n,1))/float(self.n)
         else:
             self.initBeta = scipy.zero((self.n, 1))
             self.initBeta[1:] = initBeta
@@ -31,6 +32,7 @@ class KalmanFilter(Regression):
             self.initVariance = initVariance
         else:
             self.initVariance = scipy.identity(self.n)*kappa
+
         if not Phi:
             self.Phi = scipy.identity(self.n)
         else:
@@ -40,30 +42,43 @@ class KalmanFilter(Regression):
         self.sigma = sigma
 
     def train(self):
-        """This fucntion will start the estimation. This is separated from addData."""        
-        pass
-
+        """This fucntion will start the estimation. This is separated from addData."""
+        beta = scipy.empty((self.t,self.n))
+        b = self.initBeta
+        V = self.initVariance
+        Phi = self.Phi
+        S = self.Sigma
+#        import code; code.interact(local=locals())
+        (b, V) = kalman_predict(b,V,Phi, S)
+        y = self.respond.data
+        X = self.regressors.data
+        for i, (xs, ys) in enumerate(zip(X,y)):
+            (b,V, e,K) = kalman_upd(b,V, ys ,xs, self.sigma, self.Sigma)
+            beta[i,:] = scipy.array(b).T
+            (b, V) = kalman_predict(b,V,Phi, S)
+        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
+        return self
     
 def main():
-    try:
-        intercept = False
-        stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
-        stock = StylusReader(stock_data)
-        del stock_data
-        respond = stock[:,0]
-        regressors = stock[:,1:]
-        obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2)*kappa, 0.001)
-
-        obj.train()
-        print obj.getEstimate()
-        print obj.getEstimate(date(2001,1,1))
-        print obj.predict()
-        print obj.predict(date(2001,1,1))
-        obj.est.toCSV("default2.csv")
-        print obj.R2()
-    except:
-        from print_exc_plus import print_exc_plus
-        print_exc_plus()
+#    try:
+    intercept = False
+    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+    stock = StylusReader(stock_data)
+    del stock_data
+    respond = stock[:,0]
+    regressors = stock[:,1:]
+    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2)*kappa, 0.001)
+    obj.train()
+    print obj.getEstimate()
+    print obj.getEstimate(date(2001,1,1))
+    print obj.predict()
+    print obj.predict(date(2001,1,1))
+    obj.est.toCSV("default2.csv")
+    print obj.R2()
+    import code; code.interact(local=locals())
+#    except:
+#        from print_exc_plus import print_exc_plus
+        #print_exc_plus()
 
 if __name__ == "__main__":
     main()

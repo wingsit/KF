@@ -4,6 +4,7 @@ from regression import Regression
 from numpy import array
 from scipy import matrix, shape
 
+
 full = FormatConverter("Book1.csv").readCSV().toTSF()
 fi = FormatConverter("FI.csv").readCSV().toTSF()
 fi = fi[:,0]
@@ -13,7 +14,7 @@ data = f.data
 #data = (f.data - mdp.numx.mean(f.data, 0))/mdp.numx.std(f.data, 0)
 #data = scipy.transpose(data)
 #flow = mdp.Flow([mdp.nodes.NIPALSNode(output_dim=4),mdp.nodes.CuBICANode()], verbose = 1)
-flow = mdp.Flow([mdp.nodes.PCANode(output_dim=4)], verbose = 1)
+flow = mdp.Flow([mdp.nodes.PCANode(output_dim=4),mdp.nodes.CuBICANode()], verbose = 1)
 
 #flow = mdp.nodes.PCANode(output_dim = 7)
 #flow.set_crash_recovery(1)
@@ -21,9 +22,8 @@ print "shape(data): ", shape(data)
 flow.train(array(data))
 #flow.stop_training(debug = True)
 output = flow(data)
-import code; code.interact(local=locals())
 
-g = timeSeriesFrame.TimeSeriesFrame(output, f.rheader, ["PCA1", "PCA2", "PCA3"])
+g = timeSeriesFrame.TimeSeriesFrame(output, f.rheader, ["PCA1", "PCA2", "PCA3","PCA4"])
 import code; code.interact(local=locals())
 
 print fi.size()

@@ -30,8 +30,12 @@ class ICRegression(ECRegression):
             self.b = scipy.zeros((self.n, 1))
             self.b[1:] = b
         else:
-            self.a = a
-            self.b = b
+            if a is None:
+                self.a = scipy.matrix( scipy.zeros((self.n,1)))
+            else: self.a = a
+            if b is None:
+                self.b = scipy.matrix( scipy.ones((self.n,1)))
+            else: self.b = b
 
     def train(self):
         if DEBUG:

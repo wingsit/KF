@@ -19,9 +19,9 @@ class ECRegression(Regression):
         else:
             self.d = scipy.matrix(1.0)
         if isinstance(D,numpy.ndarray):
-            self.D = D
+            self.D = scipy.matrix(D)
         else:
-            self.D = scipy.ones((n,1))            
+            self.D = scipy.matrix(scipy.ones((self.n,1)))
             self.D[0,0] = 0
         pass
 
