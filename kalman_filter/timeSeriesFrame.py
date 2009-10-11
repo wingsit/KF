@@ -4,7 +4,9 @@ from datetime import date
 import numpy
 from utility import twoIterate
 from print_exc_plus import print_exc_plus
-
+from pylab import linspace
+from matplotlib.colors import colorConverter
+import matplotlib.pyplot as mp
 DEBUG = 0
 
 ## Exception Classes for Dataframe##
@@ -31,10 +33,8 @@ class ToBeImplemented(DataframeException):
     def __init__(self):
         print "Not yet implmented"
 
-
-
 ## Class for dataframe ##
-class Dataframe:
+class Dataframe(object):
     """This is the base frame that holds flat 2 dimensional data"""
     def __init__(self, data = None, columnList = None, rowList = None, rown = None, coln = None):
         self.data = scipy.matrix(data)
@@ -63,9 +63,47 @@ class Dataframe:
             string+=(hellipsis(i)+"\n")
         return string
 
-
-
+    def plot(self):
+        """Use Spline later"""
+#         def cumulateTable(data):
+#             data = scipy.array(self.data)
+#             newdata = []
+#             for i in xrange(1,len(data),1):
+#                 temp = [0] * len(data[i])
+#                 for i in xrange(1,i+1,1):
+#                     temp += data[i]
+#                     newdata.append(list(temp))
+#             return newdata
+#        c = cumulateTable(self.data.T)
+        c = self.data.T.copy()
+        for index in xrange(len(c.T)):
+            c[:, index] /= sum(c[:,index])
+        for index in xrange(1, len(c)):
+            c[index] += c[index-1]
+        c = c.tolist()
+        x = [(float(i)+0.5/(len(self.data)))/float(len(self.data)) for i in range(len(self.data))]
+        fig = mp.figure(num = None, figsize = (10,9), facecolor='w')
+        ax = fig.add_subplot(111)
+        colors = ["#FF0000", "#00FFFF", "#0000FF", "#0000A0", "#FF0080", "#800080", "#FFFF00", "#00FF00", "#FF00FF", "#C0C0C0", 	"#808080", "#FF8040", "#804000","#800000","#808000", "#408080"]
     
+        ax.fill_between(x,c[0])
+    #mp.fill(x,c[1], facecolor = 'g')
+        xi = linspace(0,1,100)
+        for i in xrange(1,len(c), 1):
+            ax.fill_between(x, 
+                            c[i], 
+                            c[i-1],
+                            )
+#                            facecolor = colors[i])
+        legendRec = []
+#         for i in xrange(len(c)):
+#             legendRec.append(Rectangle((0, 0), 1, 1, fc = colors[i])) # creates rectangle patch for legend use.
+#        ax.legend(legendRec, self.cheader[:len(c)], 'right') # ;
+        ax.axis([0.0, 1.1, -2., 2.0])
+        ax.grid(True)
+        mp.show()
+    
+
     def size(self):
         return scipy.shape(self.data)
             
@@ -244,8 +282,6 @@ class TimeSeriesFrame(Dataframe):
         except:
             raise RowHeaderExcpetion
 
-
-
     def columnIterator(self):
         """ This is a generator to iterate across different time series"""
         while self.ci<self.size()[1]:
@@ -254,8 +290,6 @@ class TimeSeriesFrame(Dataframe):
         else:
             self.ci = 0
             raise StopIteration
-
-
 
     def rowIterator(self):
         """ This is a generator to iterate all the time series by date"""        
@@ -303,32 +337,34 @@ def windows(iterable, length=2, overlap = 0):
         yield scipy.matrix(results)
         
 if __name__ =="__main__":
-    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
-    print stock_data
-    import code; code.interact(local=locals())
+    stock_data = list(csv.reader(open("simulated_weight.csv", "rb")))
+#    print stock_data
+#    import code; code.interact(local=locals())
 
 #    lipper_data = list(csv.reader(open("t_lipper_daily.csv", "rb")))    
     stock = StylusReader(stock_data)
-    #stock.StylusReader(stock_data)
-    try: print stock
-    except: print "stock"
-    try: print stock[:,1]
-    except: print "stock[:,1]"
-    try: print stock[:, 1:7]
-    except: print "stock[:, 1:7]"
-    try:
-        from datetime import date
-        print "stock[date(2001,1,1):date(2002,1,1)]"
-        print stock[date(2001,1,1):date(2002,1,1)]
-    except:
-        pass
-    print "stock[date(2001,1,1):date(2002,3,1),:]"
-    print stock[date(2001,1,1):date(2002,3,1),:]
 
-    try: print stock[date(2001,1,1):date(2002,1,1),1:6]
-    except: print "stock[date(2001,1,1):date(2002,1,1),1:6]"
-    try: print stock[date(2001,1,1)]
-    except: 
-        print "stock[date(2001,1,1)]"
-        print_exc_plus()
+#     #stock.StylusReader(stock_data)
+#     try: print stock
+#     except: print "stock"
+#     try: print stock[:,1]
+#     except: print "stock[:,1]"
+#     try: print stock[:, 1:7]
+#     except: print "stock[:, 1:7]"
+#     try:
+#         from datetime import date
+#         print "stock[date(2001,1,1):date(2002,1,1)]"
+#         print stock[date(2001,1,1):date(2002,1,1)]
+#     except:
+#         pass
+#     print "stock[date(2001,1,1):date(2002,3,1),:]"
+#     print stock[date(2001,1,1):date(2002,3,1),:]
+
+#     try: print stock[date(2001,1,1):date(2002,1,1),1:6]
+#     except: print "stock[date(2001,1,1):date(2002,1,1),1:6]"
+#     try: print stock[date(2001,1,1)]
+#     except: 
+#         print "stock[date(2001,1,1)]"
+#         print_exc_plus()
     
+    stock.plot()

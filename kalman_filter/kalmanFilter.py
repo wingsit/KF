@@ -73,9 +73,10 @@ def main():
     print obj.getEstimate(date(2001,1,1))
     print obj.predict()
     print obj.predict(date(2001,1,1))
-    obj.est.toCSV("default2.csv")
+o#    obj.est.toCSV("simulated_portoflio.csv")
     print obj.R2()
-    import code; code.interact(local=locals())
+    obj.getEstimate().plot()
+#    import code; code.interact(local=locals())
 #    except:
 #        from print_exc_plus import print_exc_plus
         #print_exc_plus()
