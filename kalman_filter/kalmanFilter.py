@@ -5,7 +5,7 @@ from copy import deepcopy
 from libregression import kalman_predict, kalman_upd
 
 DEBUG = 0
-kappa = 1
+kappa = 1./1000.0
     
 class KalmanFilter(Regression):
     """
@@ -14,7 +14,14 @@ class KalmanFilter(Regression):
     intercept = True
     def __init__(self, respond = None, regressors = None, intercept = False,
                  Sigma = None, sigma = None, initBeta = None, initVariance = None, Phi = None,  **args):
-        """Input: paras where they are expected to be tuple or dictionary"""
+        """
+        :param respond: Dependent time series
+        :type respond: TimeSeriesFrame<double>
+        :param regressors: Independent time serieses
+        :type regressors: TimeSeriesFrame<double>
+        :param intercept: include/exclude intercept in the regression
+        :type intercept: boolean
+        """
         Regression.__init__(self,respond, regressors, intercept, **args)
         if ( initBeta is None) and self.intercept:
             self.initBeta = scipy.ones((self.n,1))/float(self.n-1)
@@ -58,6 +65,10 @@ class KalmanFilter(Regression):
         X = self.regressors.data
         for i, (xs, ys) in enumerate(zip(X,y)):
             (b,V, e,K) = kalman_upd(b,V, ys ,xs, self.sigma, self.Sigma)
+            print "b:\n", b
+            print "V:\n", V
+            print "e:\n", e
+            print "K:\n", K
             beta[i,:] = scipy.array(b).T
             (b, V) = kalman_predict(b,V,Phi, S)
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
@@ -73,12 +84,12 @@ def main():
     regressors = stock[:,1:]
     obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2)*kappa, 0.001)
     obj.train()
-    print obj.getEstimate()
-    print obj.getEstimate(date(2001,1,1))
-    print obj.predict()
-    print obj.predict(date(2001,1,1))
+    print obj.getEstimate().data
+#    print obj.getEstimate(date(2001,1,1))
+#    print obj.predict()
+#    print obj.predict(date(2001,1,1))
     #    obj.est.toCSV("simulated_portoflio.csv")
-    print obj.R2()
+#    print obj.R2()
     obj.getEstimate().plot()
 #    import code; code.interact(local=locals())
 #    except:

@@ -36,6 +36,8 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
+autoclass_content = 'both'
+
 # General information about the project.
 project = u'Kalman Filter'
 copyright = u'2009, Leon Sit'
