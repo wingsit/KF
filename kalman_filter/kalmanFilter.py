@@ -8,7 +8,9 @@ DEBUG = 0
 kappa = 1
     
 class KalmanFilter(Regression):
-    """This is a KalmanFilter Class subclassed from Regression"""
+    """
+    This is a KalmanFilter Class subclassed from Regression
+    """
     intercept = True
     def __init__(self, respond = None, regressors = None, intercept = False,
                  Sigma = None, sigma = None, initBeta = None, initVariance = None, Phi = None,  **args):
@@ -42,7 +44,9 @@ class KalmanFilter(Regression):
         self.sigma = sigma
 
     def train(self):
-        """This fucntion will start the estimation. This is separated from addData."""
+        """
+        This fucntion will start the estimation. This is separated from addData.
+        """
         beta = scipy.empty((self.t,self.n))
         b = self.initBeta
         V = self.initVariance
@@ -73,7 +77,7 @@ def main():
     print obj.getEstimate(date(2001,1,1))
     print obj.predict()
     print obj.predict(date(2001,1,1))
-o#    obj.est.toCSV("simulated_portoflio.csv")
+    #    obj.est.toCSV("simulated_portoflio.csv")
     print obj.R2()
     obj.getEstimate().plot()
 #    import code; code.interact(local=locals())

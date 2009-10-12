@@ -1,16 +1,26 @@
-.. Tracking documentation master file, created by
-   sphinx-quickstart on Sun Oct 11 16:52:38 2009.
+.. Kalman Filter documentation master file, created by
+   sphinx-quickstart on Sun Oct 11 17:28:50 2009.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Tracking's documentation!
-====================================
+Welcome to Kalman Filter's documentation!
+=========================================
 
 Contents:
-.. automodule:: kalman_filter
 
 .. toctree::
-   :maxdepth: 2
+
+   kalmanFilter
+
+.. automodule: kalman_filter.regression
+   :members:
+   :undocs-members:
+
+.. autoclass: Regression
+   :members:
+   :undocs-members:
+
+.. class: kalman_filter.Regression
 
 Indices and tables
 ==================

@@ -37,6 +37,10 @@ class ToBeImplemented(DataframeException):
 class Dataframe(object):
     """This is the base frame that holds flat 2 dimensional data"""
     def __init__(self, data = None, columnList = None, rowList = None, rown = None, coln = None):
+        """
+        :para data: either list of list of float or scipy.matrix
+        :para columnList: list<String> for the column header
+        """
         self.data = scipy.matrix(data)
         if not rowList: self.rowHeader(rowList)
         if not columnList: self.columnHeader(columnList)
@@ -108,6 +112,10 @@ class Dataframe(object):
         return scipy.shape(self.data)
             
     def rowHeader(self, headerList):
+        """
+        :param headerList: List of header for the rows
+        :type headerList: list<String>
+        """
         try:
             self.rheader = list(headerList)
         except:
