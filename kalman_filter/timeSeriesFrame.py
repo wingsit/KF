@@ -35,7 +35,9 @@ class ToBeImplemented(DataframeException):
 
 ## Class for dataframe ##
 class Dataframe(object):
-    """This is the base frame that holds flat 2 dimensional data"""
+    """
+    This is the base frame that holds flat 2 dimensional data
+    """
     def __init__(self, data = None, columnList = None, rowList = None, rown = None, coln = None):
         """
         :para data: either list of list of float or scipy.matrix
@@ -68,7 +70,9 @@ class Dataframe(object):
         return string
 
     def plot(self):
-        """Use Spline later"""
+        """
+        Plot the cumulated weight, it was quickly implemented to plot the result. It is unsafe.
+        """
 #         def cumulateTable(data):
 #             data = scipy.array(self.data)
 #             newdata = []
@@ -109,6 +113,11 @@ class Dataframe(object):
     
 
     def size(self):
+        """
+        Return shape of the data.
+        :return: the dimensions of the data.
+        :rtype: tuple(int, int)
+        """
         return scipy.shape(self.data)
             
     def rowHeader(self, headerList):
@@ -122,6 +131,10 @@ class Dataframe(object):
             raise RowHeaderException
 
     def columnHeader(self, headerList):
+        """
+        :param headerList: List of header for the columns
+        :type headerList: list<String>
+        """
         if isinstance(headerList, str):
             self.cheader = [headerList]
         else:
@@ -131,9 +144,17 @@ class Dataframe(object):
                 raise ColumnHeaderException
 
     def summary(self):
+        """
+        Return the summary of the underlying data. *Not yet implemented*
+        """
         raise ToBeImplemented
 
     def toCSV(self, name = "default.csv"):
+        """
+        Export the data into comma seperated value (CSV) format
+        :param name: The name of the file to be exported.
+        :type name: String
+        """
         import csv 
         csvReader = csv.writer(open(name, 'w'), dialect='excel')
         for i in self.data.tolist():
@@ -141,7 +162,9 @@ class Dataframe(object):
         del csvReader
 
     def __len__(self):
-        """Return number of time series it has"""
+        """
+        Return number of time series it has
+        """
         return len(self.rheader)
 
 
@@ -151,6 +174,16 @@ class TimeSeriesFrame(Dataframe):
     i = 0                       # Counter for RowIterator
     ci = 0                      # Counter for ColumnIterator
     def __init__(self, data = None, rowList = None, columnList = None, rown = None, coln = None):
+        """
+        Constructor
+
+        :param data: Matrix with time series in columns
+        :type data: scipy.matrix
+        :param rowList: list of row headers
+        :type rowList: list<String>
+        :param columnList: list of column headers
+        :type columnList: list<String>
+        """
         size = scipy.shape(data)
         if size[0] < 1 or size[1] < 1:
             raise DataException("Your data dimension sucks ass")
@@ -164,7 +197,8 @@ class TimeSeriesFrame(Dataframe):
             self.columnHeader(map(str, range(len(self.data[0]))))
         
     def __getitem__(self, key):
-        """Valid Syntax
+        """
+        Valid Syntax
         stock[:,1],
         stock[:, n:m:r],
         stock[date1:date2],
@@ -291,7 +325,12 @@ class TimeSeriesFrame(Dataframe):
             raise RowHeaderExcpetion
 
     def columnIterator(self):
-        """ This is a generator to iterate across different time series"""
+        """ 
+        This is a generator to iterate across different time series
+        
+        :rtype: TimeSeriesFrame
+        """
+
         while self.ci<self.size()[1]:
             yield self[:,self.ci]
             self.ci += 1
@@ -300,7 +339,11 @@ class TimeSeriesFrame(Dataframe):
             raise StopIteration
 
     def rowIterator(self):
-        """ This is a generator to iterate all the time series by date"""        
+        """ 
+        This is a generator to iterate all the time series by date
+
+        :rtype: TimeSeriesFrame
+        """        
         while self.i < len(self.rheader):
             yield TimeSeriesFrame(self.data[self.i], self.rheader[self.i], self.cheader)
             self.i+=1
@@ -309,6 +352,14 @@ class TimeSeriesFrame(Dataframe):
             raise StopIteration
 
 def StylusReader(writer):
+    """
+    A simple parse function that read the the output of the internal software that I work with.
+    
+    :param writer: csv.writer object
+    :type writer: csv.writer
+    :return: the data wrapped in timeSeriesFrame
+    :rtype: TimeSeriesFrame
+    """
     def toDate(element):
         try:
             element = map(int, element.split("/"))
