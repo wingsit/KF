@@ -11,7 +11,15 @@ DEBUG = 0
 class Regression(object):
     """ This is an abstruct class for Regression Type of problem."""
     def __init__(self, respond = None, regressors = None, intercept = False, **args):
-        """Input: paras where they are expected to be tuple or dictionary"""
+        """
+        :param respond: Dependent time series
+        :type respond: TimeSeriesFrame<double>
+        :param regressors: Independent time serieses
+        :type regressors: TimeSeriesFrame<dobule>
+        :param intercept: include/exclude intercept
+        :type intercept: boolean
+        :param args: reserve for future developement
+        """
         self.intercept = intercept
         self.respond = respond
         self.regressors = regressors
@@ -25,6 +33,11 @@ class Regression(object):
         self.X, self.y, self.W = map(scipy.matrix, (self.regressors.data, self.respond.data, self.weight))
         
     def train(self):
+        """
+        This fucntion will estimate the weight in the regression.
+        
+        :return: reference to the object itself
+        """
         if DEBUG:
             print "X: ", self.X
             print "y: ", self.y
@@ -36,20 +49,40 @@ class Regression(object):
         return self
 
     def getEstimate(self, date = None):
-        """Return the estimate of the regression"""
+        """
+        Get the estimate of the regression
+        
+        :param date: return the weight on a specific date
+        :type date: datetime.date
+        :return: Weight computed from the regression
+        :rtype: scipy.matrix
+        """
         if date is None: return self.est
         else: return self.est[date]
 
     def isECConstraintable(self):
-        """Boolean function to see if equality contraints can be imposed to the model. Default is True"""
+        """
+        :return: Boolean function to see if equality contraints can be imposed to the model. Default is True
+        :rtype: boolean
+        """
         return False
 
     def isICConstraintable(self):
-        """Boolean function to see if inequality and equality contraints can be imposed to the model. Default is True"""
+        """
+        :return: Boolean function to see if inequality and equality contraints can be imposed to the model. Default is True
+        :rtype: boolean
+        """
         return False
 
     def predict(self, time = None):
-        """This function take the (list of) date and return prediction in a timeseriesframe"""
+        """
+        This function take the (list of) date and return prediction in a timeseriesframe
+        
+        :param time: the specific date of the weight
+        :type time: datetime.date
+        :return: TimeSeriesFrame of estimate
+        :rtype: TimeSeriesFram<double>
+        """
 #        print self.X * self.est.data[0].T
         pre = TimeSeriesFrame( (self.X * self.est.data[0].T).sum(axis= 1), self.respond.rheader, self.respond.cheader)
         if time is None: return pre
@@ -57,13 +90,27 @@ class Regression(object):
         else: raise TypeError("time is not in datetime.date format")
 
     def error(self, time = None):
+        """
+        Compute and return the estimation error
+
+        :param time: The specific date of the weight
+        :type time: datetime.date
+        :reutrn: TimeSeriesFrame of the estimation error
+        :rtype: TimeSeriesFrame<double>
+        """
         newts = copy(self.respond)
         newts.data = newts.data - self.predict().data
         if time: return newts[time]
         else: return newts
 
     def R2(self):
-        """Simple R Squared by the definition on Wikipedia"""
+        """
+        **FIX ME**
+        Simple R Squared by the definition on Wikipedia
+        
+        :return: R squared statistics
+        :rtype: double
+        """
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
         return  1.0 - sser/sstol
