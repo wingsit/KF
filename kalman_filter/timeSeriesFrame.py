@@ -367,9 +367,9 @@ def StylusReader(writer):
             print "Element", element
 #            element = map(int, element.split("/"))
 
-        if element[2] <= 50:
+        if element[2] <= 10:
             element[2] += 2000
-        elif 51<=element[2]<=99:
+        elif 10<=element[2]<=99:
             element[2] += 1900
         try:
             return date(element[2], element[0], element[1])

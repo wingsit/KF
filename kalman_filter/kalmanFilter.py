@@ -64,12 +64,13 @@ class KalmanFilter(Regression):
         y = self.respond.data
         X = self.regressors.data
         for i, (xs, ys) in enumerate(zip(X,y)):
-            (b,V, e,K) = kalman_upd(b,V, ys ,xs, self.sigma, self.Sigma)
-            print "b:\n", b
-            print "V:\n", V
-            print "e:\n", e
-            print "K:\n", K
             beta[i,:] = scipy.array(b).T
+            (b,V, e,K) = kalman_upd(b,V, ys ,xs, self.sigma, self.Sigma)
+##            print "b:\n", b
+##            print "V:\n", V
+##            print "e:\n", e
+##            print "K:\n", K
+##            beta[i,:] = scipy.array(b).T
             (b, V) = kalman_predict(b,V,Phi, S)
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
         return self
@@ -82,7 +83,7 @@ def main():
     del stock_data
     respond = stock[:,0]
     regressors = stock[:,1:]
-    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2)*kappa, 0.001)
+    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2), 1.)
     obj.train()
     print obj.getEstimate().data
 #    print obj.getEstimate(date(2001,1,1))
