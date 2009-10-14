@@ -19,16 +19,26 @@ G = scipy.identity(n)
 a = scipy.zeros((n,1))
 c = scipy.ones((n,1))
 #        import code; code.interact(local=locals())
-(b, V) = kalman_predict(b,V,Phi, S)
-for i, (xs, ys) in enumerate(zip(X,y)):
-    beta[i,:] = scipy.array(b).T
-    (b,V, e,K) = kalman_upd(b,V, ys ,xs, sigma, Sigma, 2, D, d,G,a,c)
-#    print "b:\n", b
-#    print "V:\n", V
-#    print "e:\n", e
-#    print "K:\n", K
-#    beta[i,:] = scipy.array(b).T
-    (b, V) = kalman_predict(b,V,Phi, S)
+
+beta =  kalman_filter(b, V, Phi,  y, X, sigma, Sigma, 1 ,D , d, G, a, c)
+
+#(b, V) = kalman_predict(b,V,Phi, S)
+
+# for i in xrange(len(X)):
+#     beta[i] = scipy.array(b).T
+#     (b,V, e,K) = kalman_upd(b,V, y[i] ,X[i], sigma, Sigma, 2, D, d,G,a,c)
+#     (b, V) = kalman_predict(b,V,Phi, S)
+
+
+# for i, (xs, ys) in enumerate(zip(X,y)):
+#     beta[i,:] = scipy.array(b).T
+#     (b,V, e,K) = kalman_upd(b,V, ys ,xs, sigma, Sigma, 2, D, d,G,a,c)
+# #    print "b:\n", b
+# #    print "V:\n", V
+# #    print "e:\n", e
+# #    print "K:\n", K
+# #    beta[i,:] = scipy.array(b).T
+#     (b, V) = kalman_predict(b,V,Phi, S)
 
 print beta
 

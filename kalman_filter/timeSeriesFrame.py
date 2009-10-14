@@ -86,9 +86,8 @@ class Dataframe(object):
         c = self.data.T.copy()
         for index in xrange(len(c.T)):
             c[:, index] /= sum(c[:,index])
-        for index in xrange(1, len(c)):
-            c[index] += c[index-1]
-        c = c.tolist()
+        c = numpy.add.accumulate(c, axis = 0).tolist()
+#        c = c.tolist()
         x = [(float(i)+0.5/(len(self.data)))/float(len(self.data)) for i in range(len(self.data))]
         fig = mp.figure(num = None, figsize = (10,9), facecolor='w')
         ax = fig.add_subplot(111)

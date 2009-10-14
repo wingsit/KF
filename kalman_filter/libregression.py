@@ -44,8 +44,13 @@ def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a =
     K = V * X.T * ( s + X * V * X.T).I
     beta = beta + K * e
     if switch == 1:
+        D = scipy.matrix(D)
+        d = scipy.matrix(d)
         beta = beta - S * D.T * ( D * S * D.T).I * ( D * beta - d)
     elif switch == 2:
+        G = scipy.matrix(G)
+        a = scipy.matrix(a)
+        b = scipy.matrix(b)
         n = len(beta)
         P = 2* V.I
         q = -2 * V.I.T * beta
@@ -60,3 +65,23 @@ def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a =
     temp = K*X
     V = (scipy.identity(temp.shape[0]) - temp) * V
     return (beta,V, e,K)
+
+def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None, G = None, a = None, c = None):
+    beta = scipy.empty(scipy.shape(X))
+    if D is None:
+        D = scipy.ones((1,n))
+    if d is None:
+        d = scipy.matrix(1.)
+    if G is None:
+        G = scipy.identity(n)
+    if a is None:
+        a = scipy.zeros((n,1))
+    if c is None:
+        c = scipy.ones((n,1))
+#        import code; code.interact(local=locals())
+    (b, V) = kalman_predict(b,V,Phi, Sigma)
+    for i in xrange(len(X)):
+        beta[i] = scipy.array(b).T
+        (b,V, e,K) = kalman_upd(b,V, y[i] ,X[i], sigma, Sigma, switch, D, d,G,a,c)
+        (b, V) = kalman_predict(b,V,Phi, Sigma)
+    return beta
