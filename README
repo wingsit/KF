@@ -1,6 +1,6 @@
 This project was started to test different avaiable tools to track mutual funds and hedge fund using Capital Asset Pricing Model (CAPM thereafter) introduced my Sharpe and Arbitrage Pricing Theory (APT thereafter) introduced by Ross. The purpose of the CAPM model is to use a set of generic investable market indices to decompose the exposure of a fund. On the other hand, APT model is to find a set of generic indices which are not necessarily investable, to decompose the behaviour of an indices that we wish to analyse.
 
-The License for this project is GPLv2. 
+The License for this project is BSD.
 
 Dependency:
 
@@ -44,22 +44,23 @@ Implemented:
 rollingRegression.py
 ecRollingRegression.py
 icRollingRegression.py
+kalmanFilter.py
+ecKalmanFilter.py
+icKalmanFilter.py
 
-Experimenting:
-KalmanFilter
-ConstrainedKalmanFilter
+To-do:
 KalmanSmoother
-ConstrainedKalman
 
 To Do:
 Flexible Least Squares
 Constrained Flexible Least Squares
-Calibration Procedures
-Testing Suite
+Unit Testing Suite
 Statistical Functions for TimeSeriesFrame and DataFrame
-Data Parser from various source like Yahoo (Already written something in SQLAlchemy)
+Documentation uploaded properly
+Cython compiled module
+
 
 Please feel free to drop a comment, forward this project and contribute!!
 
-Contact: Leon Sit (wing1127aishi@gmail.com)
+Contact: Wing H. Sit (wing1127aishi@gmail.com)
 Something about me: A mathematically oriented person who wants to learn coding, finance, and software development.
