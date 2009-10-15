@@ -1,17 +1,56 @@
 import scipy, cvxopt
 from cvxopt.solvers import qp
-"""This file contains a list of algoritm that is used for estimation
+"""
+This file contains a list of algoritm that is used for estimation
     some optmisation should be done in future.
     Naming convention:
         function with no ec/ic prefix are estimator for unconstrained problem
         ec* prefix: this is for equality constraints.
-        ic* prefixL this is for inequality constraints."""
+        ic* prefixL this is for inequality constraints.
+"""
 DEBUG = 0
 
 def regression(X, y, W):
+    """
+    Return the estimated weight based on ordinary regression model
+
+    :param X: Independent variable
+    :type X: scipy.matrix<float>
+    :param y: Dependent variable
+    :type y: scipy.matrix<float>
+    :param W: Weight matrix
+    :type W: scipy.matrix<float>
+
+    .. math::
+       (X^T\; W \; X )^{-1} X^T W  y
+
+    """
     return (X.T * W * X).I*(X.T * W * y)
 
 def ecregression(X,y,W,D,d):
+    r"""
+    This return the estimated weight on the following regression problem
+    
+    .. math::
+       y = X \beta
+
+    constained to
+
+    .. math::
+       D \beta = d
+
+    The problem is solved using Lagrangian Multiplier and 
+    
+    .. math::
+       :nowrap:
+
+       \begin{eqnarray*}
+          E &=& (X^T W X)^{-1}\\
+          \lambda &=& (D E D^T)^{-1} (D E X^T W y - d)\\
+          \hat{\beta} &=& E (X^T W y - D^T \lambda)
+       \end{eqnarray*}
+
+    """
     covinv = (X.T * W * X).I
     lamb = (D * covinv * D.T).I * (D * covinv * X.T * W * y - d)
     return  covinv * (X.T * W * y - D.T * lamb)

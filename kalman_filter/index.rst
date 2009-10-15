@@ -37,6 +37,16 @@ Kalman Filter
 
 .. inheritance-diagram:: kalmanFilter
 
+libregression
+==========================================
+
+.. automodule:: libregression
+   :members:
+   :undoc-members:
+   :inherited-members:
+
+
+
 Indices and tables
 ==================
 

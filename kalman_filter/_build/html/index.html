@@ -301,19 +301,19 @@
 <dd></dd></dl>
 
 <p class="graphviz">
-<img src="_images/inheritance-c26ba84203ca73a8d1a7db454f6b4dd81cd95a91.png" alt="digraph inheritancee59e38f240 {
+<img src="_images/inheritance-99b0801f82e8269d965cb692efec4f694840be13.png" alt="digraph inheritancee59e38f240 {
 rankdir=LR;
 size=&quot;8.0, 12.0&quot;;
-  &quot;TimeSeriesFrame.RowHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.RowHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;TimeSeriesFrame.Dataframe&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.ColumnHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ColumnHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;TimeSeriesFrame.DataException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.DataException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.RowHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
+  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.RowHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;TimeSeriesFrame.DataframeException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.ToBeImplemented&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ToBeImplemented&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.ColumnHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
+  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ColumnHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.Dataframe&quot; -&gt; &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
 }" class="inheritance"/>
@@ -847,6 +847,71 @@ size=&quot;8.0, 12.0&quot;;
 </map>
 </p>
 </div>
+<div class="section" id="module-libregression">
+<h1>libregression<a class="headerlink" href="#module-libregression" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="libregression.ecregression">
+<tt class="descclassname">libregression.</tt><tt class="descname">ecregression</tt><big>(</big><em>X</em>, <em>y</em>, <em>W</em>, <em>D</em>, <em>d</em><big>)</big><a class="headerlink" href="#libregression.ecregression" title="Permalink to this definition">¶</a></dt>
+<dd><p>This return the estimated weight on the following regression problem</p>
+<div class="math">
+<p><img src="_images/math/3d845026f196811ae50c35d156d2c65d7494f144.png" alt="y = X \beta" /></p>
+</div><p>constained to</p>
+<div class="math">
+<p><img src="_images/math/2008fbaf041a7e33107edd58754b318469ddffe4.png" alt="D \beta = d" /></p>
+</div><p>The problem is solved using Lagrangian Multiplier and</p>
+<div class="math">
+<p><img src="_images/math/e731fd9df045be4aea00547c039c1bd1d073e7f2.png" alt="\begin{eqnarray*}
+   E &amp;=&amp; (X^T W X)^{-1}\\
+   \lambda &amp;=&amp; (D E D^T)^{-1} (D E X^T W y - d)\\
+   \hat{\beta} &amp;=&amp; E (X^T W y - D^T \lambda)
+\end{eqnarray*}" /></p>
+</div></dd></dl>
+
+<dl class="function">
+<dt id="libregression.icregression">
+<tt class="descclassname">libregression.</tt><tt class="descname">icregression</tt><big>(</big><em>X</em>, <em>y</em>, <em>W</em>, <em>D</em>, <em>d</em>, <em>G</em>, <em>a</em>, <em>b</em>, <em>n</em><big>)</big><a class="headerlink" href="#libregression.icregression" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libregression.kalman_filter">
+<tt class="descclassname">libregression.</tt><tt class="descname">kalman_filter</tt><big>(</big><em>b</em>, <em>V</em>, <em>Phi</em>, <em>y</em>, <em>X</em>, <em>sigma</em>, <em>Sigma</em>, <em>switch=0</em>, <em>D=None</em>, <em>d=None</em>, <em>G=None</em>, <em>a=None</em>, <em>c=None</em><big>)</big><a class="headerlink" href="#libregression.kalman_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libregression.kalman_predict">
+<tt class="descclassname">libregression.</tt><tt class="descname">kalman_predict</tt><big>(</big><em>b</em>, <em>V</em>, <em>Phi</em>, <em>S</em><big>)</big><a class="headerlink" href="#libregression.kalman_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="libregression.kalman_upd">
+<tt class="descclassname">libregression.</tt><tt class="descname">kalman_upd</tt><big>(</big><em>beta</em>, <em>V</em>, <em>y</em>, <em>X</em>, <em>s</em>, <em>S</em>, <em>switch=0</em>, <em>D=None</em>, <em>d=None</em>, <em>G=None</em>, <em>a=None</em>, <em>b=None</em><big>)</big><a class="headerlink" href="#libregression.kalman_upd" title="Permalink to this definition">¶</a></dt>
+<dd>switch:
+0 | no constraints
+1 | equality constraints
+2 | inequality constraints</dd></dl>
+
+<dl class="function">
+<dt id="libregression.regression">
+<tt class="descclassname">libregression.</tt><tt class="descname">regression</tt><big>(</big><em>X</em>, <em>y</em>, <em>W</em><big>)</big><a class="headerlink" href="#libregression.regression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the estimated weight based on ordinary regression model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>X</em> (scipy.matrix&lt;float&gt;) &#8211; Independent variable</li>
+<li><em>y</em> (scipy.matrix&lt;float&gt;) &#8211; Dependent variable</li>
+<li><em>W</em> (scipy.matrix&lt;float&gt;) &#8211; Weight matrix</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+<p><img src="_images/math/d82395b8776e83ecc5b4c073beaf0cbb603e3d1d.png" alt="(X^T\; W \; X )^{-1} X^T W  y" /></p>
+</div></dd></dl>
+
+</div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
@@ -868,6 +933,7 @@ size=&quot;8.0, 12.0&quot;;
 <li><a class="reference external" href="#module-timeSeriesFrame">Data Frame</a></li>
 <li><a class="reference external" href="#module-regression">Regression</a></li>
 <li><a class="reference external" href="#module-kalmanFilter">Kalman Filter</a></li>
+<li><a class="reference external" href="#module-libregression">libregression</a></li>
 <li><a class="reference external" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
