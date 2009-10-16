@@ -106,6 +106,7 @@ def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a =
     return (beta,V, e,K)
 
 def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None, G = None, a = None, c = None):
+    n = scipy.shape(X)[1]
     beta = scipy.empty(scipy.shape(X))
     if D is None:
         D = scipy.ones((1,n))
