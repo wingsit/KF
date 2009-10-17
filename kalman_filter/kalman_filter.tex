@@ -11,9 +11,9 @@
 \usepackage{wrapfig}
 \usepackage{amsfonts}
 \usepackage{fancyhdr}
-\usepackage{algorithmic}
-\usepackage{algorithm}
-\numberwithin{algorithm}{section}
+%\usepackage{algorithmic}
+%\usepackage{algorithm}
+%\numberwithin{algorithm}{section}
 
 \theoremstyle{plain}
 \newtheorem{thm}{Theorem}[section]
@@ -351,7 +351,7 @@ In constraied FLS problem, we only consider the estimation problem with full his
 To that end, the corresponding mathematical optimisation problem we are considering to solve is
 \begin{equation}
 \begin{split}
-\arg_{\beta_t,\forall t}\min\sum_{\forall t \text{ that make sense}} (y_t - X_t \beta_t)^T W_1 (y_t - X_t \beta_t) +& \lambda (\beta_{t+1} - \Phi \beta_t)^T W_2 (\beta_{t+1} - \Phi \beta_t)\\
+\arg_{\beta_t,\forall t}\min\sum_{t = 1}^m (y_t - X_t \beta_t)^T W_1 (y_t - X_t \beta_t) +& \sum_{t=1}^{m-1}\lambda (\beta_{t+1} - \Phi \beta_t)^T W_2 (\beta_{t+1} - \Phi \beta_t)\\
 G \beta_t & \geq g, \quad \forall t\\
 D \beta_t & = d, \quad \forall t
 \end{split}
@@ -390,6 +390,7 @@ P_{1,1} &= 2(X_1^T W_1 X_1 + \lambda \Phi^T W_2 \Phi)\\
 P_{i,i} &= 2(X_i^T W_1 X_i + \lambda \Phi^T W_2 \Phi + \lambda W_2)\\
 P_{i, i+1} &= -2( \lambda \Phi^T W_2)\\
 P_{i+1, i} &= - 2(\lambda W_2 \Phi)\\
+P_{T,T} &= X^T_t W_1 X_T\\
 q &= 
 -2\left[
 \begin{array}{c}
