@@ -3,7 +3,7 @@ from ecKalmanFilter import ECKalmanFilter
 import csv,numpy, scipy
 from timeSeriesFrame import *
 from copy import deepcopy
-from libregression import kalman_predict, kalman_upd
+from libregression import kalman_filter
 from icRegression import ICRegression
 
 DEBUG = 0
@@ -57,25 +57,21 @@ class ICKalmanFilter(ECKalmanFilter, ICRegression):
 
     def train(self):
         """This fucntion will start the estimation. This is separated from addData."""
-        betas = scipy.empty((self.t,self.n))
-        beta = self.initBeta
+        beta = scipy.empty((self.t,self.n))
+        b = self.initBeta
         V = self.initVariance
         Phi = self.Phi
+        s = self.sigma
         S = self.Sigma
-        (beta, V) = kalman_predict(beta,V,Phi, S)
         y = self.respond.data
         X = self.regressors.data
         D = self.D
         d = self.d
         G = self.G
         a = self.a
-        b = self.b
-
-        for i, (xs, ys) in enumerate(zip(X,y)):
-            (beta,V, e,K) = kalman_upd(beta,V, ys ,xs, self.sigma, self.Sigma, 2, D, d,G,a,b)
-            betas[i,:] = scipy.array(beta).T
-            (beta, V) = kalman_predict(beta,V,Phi, S)
-        self.est = TimeSeriesFrame(betas, self.regressors.rheader, self.regressors.cheader)
+        c = self.b
+        beta =  kalman_filter(b, V, Phi, y, X, s, S, 2, D, d, G, a, c)
+        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
         return self
     
 def main():
@@ -94,7 +90,7 @@ def main():
     print obj.predict(date(2001,1,1))
     obj.est.toCSV("default2.csv")
     print obj.R2()
-    import code; code.interact(local=locals())
+#    import code; code.interact(local=locals())
 #    except:
 #        from print_exc_plus import print_exc_plus
         #print_exc_plus()

@@ -21,8 +21,12 @@ class ECRegression(Regression):
         if isinstance(D,numpy.ndarray):
             self.D = scipy.matrix(D)
         else:
-            self.D = scipy.matrix(scipy.ones((self.n,1)))
-            self.D[0,0] = 0
+            if self.intercept == True:
+                self.D = scipy.matrix(scipy.ones((1, self.n)))
+                self.D[0,0] = 0
+            else:
+                self.D = scipy.matrix(scipy.ones((1, self.n)))
+
         pass
 
     def train(self):

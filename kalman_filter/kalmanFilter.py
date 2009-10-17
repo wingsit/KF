@@ -53,7 +53,7 @@ class KalmanFilter(Regression):
         else:
             self.initVariance = scipy.identity(self.n)*KAPPA
 
-       if not Phi:
+        if not Phi:
             self.Phi = scipy.identity(self.n)
         else:
             self.Phi = Phi
