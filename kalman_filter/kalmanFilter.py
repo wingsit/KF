@@ -53,7 +53,7 @@ class KalmanFilter(Regression):
         else:
             self.initVariance = scipy.identity(self.n)*KAPPA
 
-        if not Phi:
+        if  Phi is None:
             self.Phi = scipy.identity(self.n)
         else:
             self.Phi = Phi
@@ -82,18 +82,18 @@ class KalmanFilter(Regression):
 def main():
 #    try:
     intercept = False
-    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
     stock = StylusReader(stock_data)
     del stock_data
     respond = stock[:, 0]
     regressors = stock[:, 1:]
-    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(2), 1.)
+    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(7), 1.)
     obj.train()
     print obj.getEstimate().data
 #    print obj.getEstimate(date(2001,1,1))
 #    print obj.predict()
 #    print obj.predict(date(2001,1,1))
-    #    obj.est.toCSV("simulated_portoflio.csv")
+    obj.est.toCSV("simulated_dodge_cox.csv")
 #    print obj.R2()
     obj.getEstimate().plot()
 #    import code; code.interact(local=locals())

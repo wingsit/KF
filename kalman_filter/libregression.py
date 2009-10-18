@@ -1,5 +1,8 @@
 import scipy, cvxopt
 from cvxopt.solvers import qp
+
+cvxopt.solvers.options['show_progress'] = False
+
 """
 This file contains a list of algoritm that is used for estimation
     some optmisation should be done in future.
@@ -125,3 +128,4 @@ def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None,
         (b,V, e,K) = kalman_upd(b,V, y[i] ,X[i], sigma, Sigma, switch, D, d,G,a,c)
         (b, V) = kalman_predict(b,V,Phi, Sigma)
     return beta
+
