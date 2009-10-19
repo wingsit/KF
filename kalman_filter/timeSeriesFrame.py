@@ -33,7 +33,7 @@ class Dataframe(object):
     """
     This is the base frame that holds flat 2 dimensional data
     """
-    def __init__(self, data = None, columnList = None, rowList = None, rown = None, coln = None):
+    def __init__(self, data = None, columnList = None, rowList = None):
         """
         :para data: either list of list of float or scipy.matrix
         :para columnList: list<String> for the column header
@@ -68,21 +68,10 @@ class Dataframe(object):
         """
         Plot the cumulated weight, it was quickly implemented to plot the result. It is unsafe.
         """
-#         def cumulateTable(data):
-#             data = scipy.array(self.data)
-#             newdata = []
-#             for i in xrange(1,len(data),1):
-#                 temp = [0] * len(data[i])
-#                 for i in xrange(1,i+1,1):
-#                     temp += data[i]
-#                     newdata.append(list(temp))
-#             return newdata
-#        c = cumulateTable(self.data.T)
         c = self.data.T.copy()
         for index in xrange(len(c.T)):
             c[:, index] /= sum(c[:,index])
         c = numpy.add.accumulate(c, axis = 0).tolist()
-#        c = c.tolist()
         x = [(float(i)+0.5/(len(self.data)))/float(len(self.data)) for i in range(len(self.data))]
         fig = mp.figure(num = None, figsize = (12,9), facecolor='w')
         ax = fig.add_subplot(111)
@@ -104,7 +93,6 @@ class Dataframe(object):
                   "#408080"]
     
         ax.fill_between(x,c[0], facecolor = colors[0], label = self.cheader[0])
-    #mp.fill(x,c[1], facecolor = 'g')
         xi = linspace(0,1,100)
         for i in xrange(1,len(c), 1):
             ax.fill_between(x, 
@@ -116,7 +104,7 @@ class Dataframe(object):
         from matplotlib.patches import Rectangle
         r = Rectangle((0, 0), 1, 1) # creates rectangle patch for legend use.
         for i in xrange(len(c)):
-             legendRec.append(Rectangle((0, 0), 1, 1, fc = colors[i])) # creates rectangle patch for legend use.
+            legendRec.append(Rectangle((0, 0), 1, 1, fc = colors[i])) # creates rectangle patch for legend use.
         ax.legend(legendRec, self.cheader[:len(c)], loc = (0.9,0.5), shadow=True, fancybox=True) # ;
         ax.axis([0.0, 1.1, 0, 1])
         ax.grid(True)
@@ -396,15 +384,15 @@ def StylusReader(writer):
     data = scipy.transpose(scipy.matrix(writer))
     return TimeSeriesFrame(data, r,c)
 
-def windows(iterable, length=2, overlap = 0):
-    it = iter(iterable)
-    results = list(itertools.islice(it,length))
-    while len(results) == length:
-        yield scipy.matrix(results)
-        results = results[length - overlap:]
-        results.extend(itertools.islice(it, length-overlap))
-    if results:
-        yield scipy.matrix(results)
+# def windows(iterable, length=2, overlap = 0):
+#     it = iter(iterable)
+#     results = list(itertools.islice(it,length))
+#     while len(results) == length:
+#         yield scipy.matrix(results)
+#         results = results[length - overlap:]
+#         results.extend(itertools.islice(it, length-overlap))
+#     if results:
+#         yield scipy.matrix(results)
         
 if __name__ =="__main__":
     stock_data = list(csv.reader(open("simulated_weight.csv", "rb")))
