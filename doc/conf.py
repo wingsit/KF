@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Kalman Filter documentation build configuration file, created by
-# sphinx-quickstart on Sun Oct 11 17:28:50 2009.
+# kalman documentation build configuration file, created by
+# sphinx-quickstart on Sun Oct 11 18:30:04 2009.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -13,18 +13,19 @@
 
 import sys, os
 
-sys.path.append("/home/wingsit/MyPy/kalman_filter/kalman_filter")
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('../kalman_filter'))
 
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc','sphinx.ext.inheritance_diagram',
+              'sphinx.ext.pngmath']
+
+#extensions = ['sphinx.ext.*']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -37,6 +38,8 @@ source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
+
+autoclass_content = 'both'
 
 # General information about the project.
 project = u'Kalman Filter'
@@ -72,11 +75,11 @@ exclude_trees = ['_build']
 #default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+add_module_names = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
@@ -130,7 +133,7 @@ html_static_path = ['_static']
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
-#html_use_smartypants = True
+html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
@@ -140,10 +143,10 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+html_use_modindex = True
 
 # If false, no index is generated.
-#html_use_index = True
+html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
@@ -160,7 +163,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'KalmanFilterdoc'
+htmlhelp_basename = 'kalmandoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -174,7 +177,7 @@ htmlhelp_basename = 'KalmanFilterdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'KalmanFilter.tex', u'Kalman Filter Documentation',
+  ('index', 'kalman.tex', u'kalman Documentation',
    u'Leon Sit', 'manual'),
 ]
 

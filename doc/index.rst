@@ -1,26 +1,51 @@
-.. Kalman Filter documentation master file, created by
-   sphinx-quickstart on Sun Oct 11 17:28:50 2009.
+.. kalman documentation master file, created by
+   sphinx-quickstart on Sun Oct 11 18:30:04 2009.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Kalman Filter's documentation!
-=========================================
+Welcome to Kalman Filters's documentation!
+==========================================
 
-Contents:
 
-.. toctree::
+Data Frame
+==========================================
 
-   kalmanFilter
-
-.. automodule: kalman_filter.regression
+.. automodule:: timeSeriesFrame
    :members:
-   :undocs-members:
+   :undoc-members:
+   :inherited-members:
 
-.. autoclass: Regression
+.. inheritance-diagram:: TimeSeriesFrame
+
+Regression
+==========================================
+
+.. automodule:: regression
    :members:
-   :undocs-members:
+   :undoc-members:
+   :inherited-members:
 
-.. class: kalman_filter.Regression
+.. inheritance-diagram:: regression
+
+Kalman Filter
+==========================================
+
+.. automodule:: kalmanFilter
+   :members:
+   :undoc-members:
+   :inherited-members:
+
+.. inheritance-diagram:: kalmanFilter
+
+libregression
+==========================================
+
+.. automodule:: libregression
+   :members:
+   :undoc-members:
+   :inherited-members:
+
+
 
 Indices and tables
 ==================

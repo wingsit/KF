@@ -1,13 +1,12 @@
 #from regression import Regression, ToBeImplemented
 from ecKalmanFilter import ECKalmanFilter
-import csv,numpy, scipy
-from timeSeriesFrame import *
-from copy import deepcopy
-from libregression import kalman_predict, kalman_upd
+import csv, scipy
+from timeSeriesFrame import TimeSeriesFrame, StylusReader
+from libregression import kalman_filter
 from icRegression import ICRegression
-
+from datetime import date
 DEBUG = 0
-kappa = 1
+KAPPA = 100
     
 class ICKalmanFilter(ECKalmanFilter, ICRegression):
     """This is a KalmanFilter Class subclassed from Regression"""
@@ -56,37 +55,35 @@ class ICKalmanFilter(ECKalmanFilter, ICRegression):
 
 
     def train(self):
-        """This fucntion will start the estimation. This is separated from addData."""
-        betas = scipy.empty((self.t,self.n))
-        beta = self.initBeta
+        """
+        This fucntion will start the estimation. This is separated from addData.
+        """
+        beta = scipy.empty((self.t,self.n))
+        b = self.initBeta
         V = self.initVariance
         Phi = self.Phi
+        s = self.sigma
         S = self.Sigma
-        (beta, V) = kalman_predict(beta,V,Phi, S)
         y = self.respond.data
         X = self.regressors.data
         D = self.D
         d = self.d
         G = self.G
         a = self.a
-        b = self.b
-
-        for i, (xs, ys) in enumerate(zip(X,y)):
-            (beta,V, e,K) = kalman_upd(beta,V, ys ,xs, self.sigma, self.Sigma, 2, D, d,G,a,b)
-            betas[i,:] = scipy.array(beta).T
-            (beta, V) = kalman_predict(beta,V,Phi, S)
-        self.est = TimeSeriesFrame(betas, self.regressors.rheader, self.regressors.cheader)
+        c = self.b
+        beta =  kalman_filter(b, V, Phi, y, X, s, S, 2, D, d, G, a, c)
+        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
         return self
     
 def main():
 #    try:
     intercept = False
-    stock_data = list(csv.reader(open("simulated_portfolio.csv", "rb")))
+    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
     stock = StylusReader(stock_data)
     del stock_data
     respond = stock[:,0]
     regressors = stock[:,1:]
-    obj = ICKalmanFilter(respond, regressors, intercept, scipy.identity(2)*kappa, 0.001)
+    obj = ICKalmanFilter(respond, regressors, intercept, scipy.identity(7)*KAPPA, 0.01, Phi = scipy.identity(7)*0.95)
     obj.train()
     print obj.getEstimate()
     print obj.getEstimate(date(2001,1,1))
@@ -94,10 +91,7 @@ def main():
     print obj.predict(date(2001,1,1))
     obj.est.toCSV("default2.csv")
     print obj.R2()
-    import code; code.interact(local=locals())
-#    except:
-#        from print_exc_plus import print_exc_plus
-        #print_exc_plus()
+    obj.est.plot()
 
 if __name__ == "__main__":
     main()

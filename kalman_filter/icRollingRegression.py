@@ -10,7 +10,7 @@ from icRegression import ICRegression
 from libregression import icregression
 
 DEBUG = 0
-WINDOWSIZE = 60
+WINDOWSIZE = 24
 
 class ICRollingRegression(RollingRegression, ICRegression):
     """ This is an abstruct class for Regression Type of problem."""
@@ -64,6 +64,7 @@ def main():
 #    print obj.predict(date(1999,1,1))
 #    print obj.error()
     print obj.R2()
+    obj.est.plot()
     pass
 
 
