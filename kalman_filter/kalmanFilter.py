@@ -2,7 +2,7 @@ from regression import Regression, ToBeImplemented
 import csv,numpy, scipy
 from timeSeriesFrame import *
 from copy import deepcopy
-from libregression import kalman_predict, kalman_upd
+from libregression import kalman_filter
 
 DEBUG = 0
 kappa = 1./1000.0
@@ -59,19 +59,11 @@ class KalmanFilter(Regression):
         V = self.initVariance
         Phi = self.Phi
         S = self.Sigma
+        s = self.sigma
 #        import code; code.interact(local=locals())
-        (b, V) = kalman_predict(b,V,Phi, S)
         y = self.respond.data
         X = self.regressors.data
-        for i, (xs, ys) in enumerate(zip(X,y)):
-            beta[i,:] = scipy.array(b).T
-            (b,V, e,K) = kalman_upd(b,V, ys ,xs, self.sigma, self.Sigma)
-##            print "b:\n", b
-##            print "V:\n", V
-##            print "e:\n", e
-##            print "K:\n", K
-##            beta[i,:] = scipy.array(b).T
-            (b, V) = kalman_predict(b,V,Phi, S)
+        beta = kalman_filter(b,V,Phi, y,X, s, S)
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
         return self
     
