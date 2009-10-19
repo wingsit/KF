@@ -114,8 +114,11 @@ class Regression(object):
         """
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
-        return  1.0 - sser/sstol
-
+        rsq = 1.0 - sser/sstol
+        print sser
+        print sstol
+#        assert 0. < rsq and rsq < 1.
+        return rsq
 class ECRegression(Regression):
     def __init__(self, respond = None, regressors = None, intercept = False, D = None, d = None, **args):
         Regression.__init__(self,respond, regressors, intercept, **args)

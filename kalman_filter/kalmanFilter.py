@@ -1,9 +1,3 @@
-<<<<<<< HEAD:kalman_filter/kalmanFilter.py
-from regression import Regression, ToBeImplemented
-import csv,numpy, scipy
-from timeSeriesFrame import *
-from copy import deepcopy
-=======
 """
 This module contains ordinary kalman filter classes
 """
@@ -11,7 +5,6 @@ This module contains ordinary kalman filter classes
 from regression import Regression
 import csv, scipy
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
->>>>>>> 80036172538e58a93ad3c787ce2ce6d44848b593:kalman_filter/kalmanFilter.py
 from libregression import kalman_filter
 
 DEBUG = 0
@@ -78,20 +71,12 @@ class KalmanFilter(Regression):
         Phi = self.Phi
         S = self.Sigma
         s = self.sigma
-<<<<<<< HEAD:kalman_filter/kalmanFilter.py
-#        import code; code.interact(local=locals())
-        y = self.respond.data
-        X = self.regressors.data
-        beta = kalman_filter(b,V,Phi, y,X, s, S)
-        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
-=======
         y = self.respond.data
         X = self.regressors.data
         beta =  kalman_filter(b, V, Phi, y, X, s, S)
         self.est = TimeSeriesFrame(beta, 
                                    self.regressors.rheader, 
                                    self.regressors.cheader)
->>>>>>> 80036172538e58a93ad3c787ce2ce6d44848b593:kalman_filter/kalmanFilter.py
         return self
     
 def main():
