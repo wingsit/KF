@@ -11,7 +11,7 @@ This file contains a list of algoritm that is used for estimation
         ec* prefix: this is for equality constraints.
         ic* prefixL this is for inequality constraints.
 """
-DEBUG = 1
+DEBUG = 0
 
 def regression(X, y, W):
     """
