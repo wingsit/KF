@@ -1,4 +1,4 @@
-import csv,scipy, numpy, cvxopt
+import csv, scipy, numpy, cvxopt
 from cvxopt.solvers import qp
 from timeSeriesFrame import *
 from datetime import date
@@ -87,8 +87,7 @@ class Regression(object):
         :return: TimeSeriesFrame of estimate
         :rtype: TimeSeriesFram<double>
         """
-#        print self.X * self.est.data[0].T
-        pre = TimeSeriesFrame( (self.X * self.est.data[0].T).sum(axis= 1), self.respond.rheader, self.respond.cheader)
+        pre = TimeSeriesFrame( scipy.multiply(self.X ,self.est.data).sum(axis = 1), self.respond.rheader, self.respond.cheader)
         if time is None: return pre
         elif isinstance(time, date): return pre[time]
         else: raise TypeError("time is not in datetime.date format")
