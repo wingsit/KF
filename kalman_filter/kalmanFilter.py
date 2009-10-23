@@ -37,7 +37,7 @@ class KalmanFilter(Regression):
         if ( initBeta is None) and self.intercept:
             self.initBeta = scipy.ones((self.n, 1))/float(self.n - 1)
             self.initBeta[0] = 0
-        elif initBeta.any() and self.intercept:
+        elif initBeta is not None and self.intercept:
             self.initBeta = scipy.ones((n, 1))/float(n)
         elif (initBeta is None) and (not self.intercept):
             self.initBeta = scipy.ones((self.n, 1))/float(self.n)
