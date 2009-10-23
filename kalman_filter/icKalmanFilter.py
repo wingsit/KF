@@ -39,6 +39,7 @@ class ICKalmanFilter(ECKalmanFilter, ICRegression):
                                 D,
                                 d,
                                 **args)
+        
         ICRegression.__init__(self,
                               respond,
                               regressors,
@@ -83,8 +84,9 @@ def main():
     del stock_data
     respond = stock[:,0]
     regressors = stock[:,1:]
-    Phi = scipy.matrix([[19.92541, 1.869618], [1.869618, 2.862114]]).T
-    obj = ICKalmanFilter(respond, regressors, intercept, scipy.identity(2)*KAPPA, 0.12, Phi = Phi)
+    initBeta = scipy.matrix([0.528744, 0.471256]).T
+    Sigma = scipy.matrix([[0.123873, -0.12387], [-0.12387,0.123873]])
+    obj = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta)
     obj.train()
 #    print obj.getEstimate()
 #    print obj.getEstimate(date(2001,1,1))

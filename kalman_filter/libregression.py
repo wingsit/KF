@@ -11,7 +11,7 @@ This file contains a list of algoritm that is used for estimation
         ec* prefix: this is for equality constraints.
         ic* prefixL this is for inequality constraints.
 """
-DEBUG = 0
+DEBUG = 1
 
 def regression(X, y, W):
     """
@@ -28,6 +28,11 @@ def regression(X, y, W):
        (X^T\; W \; X )^{-1} X^T W  y
 
     """
+    if DEBUG:
+        print "X: ", X
+        print "y: ", y
+        print "W: ", W
+        print "(X.T * W * X): ", (X.T * W * X)
     return (X.T * W * X).I*(X.T * W * y)
 
 def ecregression(X,y,W,D,d):
@@ -54,6 +59,14 @@ def ecregression(X,y,W,D,d):
        \end{eqnarray*}
 
     """
+    if DEBUG:
+        print "X: ", X
+        print "y: ", y
+        print "W: ", W
+        print "D: ", D
+        print "d: ", d
+        print "(X.T * W * X).I",  (X.T * W * X).I
+        print "(D * covinv * D.T).I: ", (D * (X.T * W * X).I * D.T).I
     covinv = (X.T * W * X).I
     lamb = (D * covinv * D.T).I * (D * covinv * X.T * W * y - d)
     return  covinv * (X.T * W * y - D.T * lamb)
