@@ -8,7 +8,6 @@ libregression mod index.html
 timeSeriesFrame.TimeSeriesFrame class index.html
 timeSeriesFrame.TimeSeriesFrame.size method index.html
 timeSeriesFrame.Dataframe.size method index.html
-timeSeriesFrame.windows function index.html
 timeSeriesFrame.DataException.message attribute index.html
 kalmanFilter.main function index.html
 libregression.regression function index.html

@@ -77,7 +77,7 @@
 
 <dl class="class">
 <dt id="timeSeriesFrame.Dataframe">
-<em class="property">class </em><tt class="descclassname">timeSeriesFrame.</tt><tt class="descname">Dataframe</tt><big>(</big><em>data=None</em>, <em>columnList=None</em>, <em>rowList=None</em>, <em>rown=None</em>, <em>coln=None</em><big>)</big><a class="headerlink" href="#timeSeriesFrame.Dataframe" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">timeSeriesFrame.</tt><tt class="descname">Dataframe</tt><big>(</big><em>data=None</em>, <em>columnList=None</em>, <em>rowList=None</em><big>)</big><a class="headerlink" href="#timeSeriesFrame.Dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the base frame that holds flat 2 dimensional data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -295,27 +295,22 @@
 
 </dd></dl>
 
-<dl class="function">
-<dt id="timeSeriesFrame.windows">
-<tt class="descclassname">timeSeriesFrame.</tt><tt class="descname">windows</tt><big>(</big><em>iterable</em>, <em>length=2</em>, <em>overlap=0</em><big>)</big><a class="headerlink" href="#timeSeriesFrame.windows" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <p class="graphviz">
-<img src="_images/inheritance-da26495767fa9b03c4cc246e727a47de64531ed8.png" alt="digraph inheritancee59e38f240 {
+<img src="_images/inheritance-1c0148bc7ecf0d3262cf5cc725d1d43013fc4bca.png" alt="digraph inheritancee59e38f240 {
 rankdir=LR;
 size=&quot;8.0, 12.0&quot;;
-  &quot;TimeSeriesFrame.ColumnHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ColumnHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.DataframeException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.Dataframe&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.DataException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.DataException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
-  &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.Dataframe&quot; -&gt; &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
-  &quot;TimeSeriesFrame.DataframeException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.RowHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
-  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.RowHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.ColumnHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
+  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ColumnHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
   &quot;TimeSeriesFrame.ToBeImplemented&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
   &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.ToBeImplemented&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.RowHeaderException&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
+  &quot;TimeSeriesFrame.DataframeException&quot; -&gt; &quot;TimeSeriesFrame.RowHeaderException&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [shape=box,style=&quot;setlinewidth(0.5)&quot;,fontsize=10,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25];
+  &quot;TimeSeriesFrame.Dataframe&quot; -&gt; &quot;TimeSeriesFrame.TimeSeriesFrame&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
 }" class="inheritance"/>
 </p>
 </div>
@@ -685,14 +680,14 @@ Simple R Squared by the definition on Wikipedia</p>
 <dd></dd></dl>
 
 <p class="graphviz">
-<img src="_images/inheritance-5e9d67041090758e659bf90d7b89330866b7e1e3.png" alt="digraph inheritance34a6724fd0 {
+<img src="_images/inheritance-e62d65408c9da2ff61777d3c31ca56b7796add3b.png" alt="digraph inheritance34a6724fd0 {
 rankdir=LR;
 size=&quot;8.0, 12.0&quot;;
   &quot;regression.ECRegression&quot; [style=&quot;setlinewidth(0.5)&quot;,URL=&quot;#regression.ECRegression&quot;,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25,shape=box,fontsize=10];
   &quot;regression.Regression&quot; -&gt; &quot;regression.ECRegression&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
+  &quot;regression.Regression&quot; [style=&quot;setlinewidth(0.5)&quot;,URL=&quot;#regression.Regression&quot;,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25,shape=box,fontsize=10];
   &quot;regression.ICRegression&quot; [style=&quot;setlinewidth(0.5)&quot;,URL=&quot;#regression.ICRegression&quot;,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25,shape=box,fontsize=10];
   &quot;regression.ECRegression&quot; -&gt; &quot;regression.ICRegression&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
-  &quot;regression.Regression&quot; [style=&quot;setlinewidth(0.5)&quot;,URL=&quot;#regression.Regression&quot;,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25,shape=box,fontsize=10];
 }" usemap="#inheritance34a6724fd0" class="inheritance"/>
 <map id="inheritance34a6724fd0" name="inheritance34a6724fd0">
 <area shape="rect" href="#regression.ECRegression" title="regression.ECRegression" alt="" coords="216,5,395,32"/>
@@ -703,6 +698,7 @@ size=&quot;8.0, 12.0&quot;;
 </div>
 <div class="section" id="module-kalmanFilter">
 <h1>Kalman Filter<a class="headerlink" href="#module-kalmanFilter" title="Permalink to this headline">¶</a></h1>
+<p>This module contains ordinary kalman filter classes</p>
 <dl class="class">
 <dt id="kalmanFilter.KalmanFilter">
 <em class="property">class </em><tt class="descclassname">kalmanFilter.</tt><tt class="descname">KalmanFilter</tt><big>(</big><em>respond=None</em>, <em>regressors=None</em>, <em>intercept=False</em>, <em>Sigma=None</em>, <em>sigma=None</em>, <em>initBeta=None</em>, <em>initVariance=None</em>, <em>Phi=None</em>, <em>**args</em><big>)</big><a class="headerlink" href="#kalmanFilter.KalmanFilter" title="Permalink to this definition">¶</a></dt>
