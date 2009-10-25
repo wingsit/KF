@@ -159,6 +159,9 @@ class ECRegression(Regression):
 
     def isECConstraintable(self): return True
 
+    def __str__(self):
+        return self.__class__.__name__
+
 class ICRegression(ECRegression):
     """ This is an abstruct class for Regression Type of problem."""
     def __init__(self, respond = None, regressors = None, intercept = False, D = None, d = None, G = None, a = None, b = None, **args):

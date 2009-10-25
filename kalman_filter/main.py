@@ -5,6 +5,7 @@ from icRollingRegression import ICRollingRegression
 from ecRollingRegression import ECRollingRegression
 from ecKalmanFilter import ECKalmanFilter
 from kalmanFilter import KalmanFilter
+from kalmanSmoother import KalmanSmoother
 from icKalmanFilter import ICKalmanFilter
 from icFlexibleLeastSquare import ICFlexibleLeastSquare
 
@@ -17,8 +18,6 @@ def main():
     regressors = stock[:,1:]
     t, n= regressors.size()
     reg = Regression(respond, regressors, intercept).train()
-
-
 
     D = scipy.ones((1,n))
     d = scipy.matrix(1.0)
@@ -51,6 +50,7 @@ def main():
     initBeta = scipy.matrix([0.528744, 0.471256]).T
     Sigma = scipy.matrix([[0.123873, -0.12387], [-0.12387,0.123873]])
     kalman = KalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
+    kalmans = KalmanSmoother(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
 
     
     eckalman = ECKalmanFilter(respond, regressors, intercept, Sigma, 0.12, eta = initBeta).train()
@@ -59,16 +59,13 @@ def main():
     ickalman = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
     icfls = ICFlexibleLeastSquare(respond, regressors, intercept, 1.).train()
 
-    print reg.R2()
-    print ecreg.R2()
-    print icreg.R2()
-    print rreg.R2()
-    print ecrreg.R2()
-    print icrreg.R2()
-    print kalman.R2()
-    print eckalman.R2()
-    print ickalman.R2()
-    print icfls.R2()
+    all_model = [reg, ecreg, icreg, rreg, ecrreg, icrreg, kalman, kalmans, eckalman, ickalman, icfls]
 
+
+    for i in all_model:
+        print i
+        print "\t", i.R2()
+#        i.getEstimate().plot()
+#    raw_input()
 if __name__ == "__main__":
     main()
