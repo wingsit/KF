@@ -43,8 +43,6 @@ class KalmanFilter(Regression):
             self.initBeta = scipy.ones((self.n, 1))/float(self.n)
         else:
             self.initBeta = scipy.zeros((self.n, 1))
-            print initBeta
-            print self.initBeta
             self.initBeta = initBeta
 
         if initVariance and self.intercept:

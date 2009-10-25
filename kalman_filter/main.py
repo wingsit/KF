@@ -50,7 +50,7 @@ def main():
 
 
 #    obj = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train().getEstimate().plot()
-    obj = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
-    print obj.R2()
+#    obj = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
+#    print obj.R2()
 if __name__ == "__main__":
     main()

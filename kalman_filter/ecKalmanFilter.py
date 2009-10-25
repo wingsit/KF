@@ -57,8 +57,6 @@ class ECKalmanFilter(KalmanFilter, ECRegression):
         D = self.D
         d = self.d
         s = self.sigma
-        print "D: ", D
-        print "d: ", d
         beta =  kalman_filter(b, V, Phi, y, X, s, S, 1, D, d)
 
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)

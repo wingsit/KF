@@ -2,7 +2,7 @@ import csv, scipy, cvxopt
 from numpy import multiply as mlt
 from numpy import mat
 #from libregression import *
-data = scipy.matrix(map(lambda x: map(float, x), csv.reader(open("test_dodge_cox.csv", "rb"))))
+data = scipy.matrix(map(lambda x: map(float, x), csv.reader(open("sine_wave2.csv", "rb"))))
 
 y = data[:, 0]
 X = data[:, 1:]

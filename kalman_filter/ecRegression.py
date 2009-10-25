@@ -27,7 +27,6 @@ class ECRegression(Regression):
             else:
                 self.D = scipy.matrix(scipy.ones((1, self.n)))
 
-        pass
 
     def train(self):
         if DEBUG:

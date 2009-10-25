@@ -117,9 +117,7 @@ class Regression(object):
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
         rsq = 1.0 - sser/sstol
-        print sser
-        print sstol
-#        assert 0. < rsq and rsq < 1.
+        assert 0. < rsq and rsq < 1.
         return rsq
     
 class ECRegression(Regression):
