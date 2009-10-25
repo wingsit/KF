@@ -3,7 +3,13 @@ from timeSeriesFrame import *
 from datetime import date
 from exc import *
 from copy import copy
-from libregression import ecregression
+
+try:
+    from clibregression import ecregression
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import ecregression
+
 from windows import *
 from rollingRegression import RollingRegression
 from ecRegression import ECRegression

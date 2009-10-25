@@ -2,7 +2,13 @@
 from ecKalmanFilter import ECKalmanFilter
 import csv, scipy
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
-from libregression import kalman_filter
+
+try:
+    from clibregression import kalman_predict, kalman_upd, kalman_filter
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import kalman_predict, kalman_upd, kalman_filter
+
 from icRegression import ICRegression
 from datetime import date
 DEBUG = 0

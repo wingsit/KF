@@ -1,6 +1,6 @@
 # Sphinx inventory version 1
 # Project: Kalman Filter
-# Version: 0.0.1
+# Version: 0.1.4
 kalmanFilter mod index.html
 timeSeriesFrame mod index.html
 regression mod index.html
@@ -8,7 +8,6 @@ libregression mod index.html
 timeSeriesFrame.TimeSeriesFrame class index.html
 timeSeriesFrame.TimeSeriesFrame.size method index.html
 timeSeriesFrame.Dataframe.size method index.html
-timeSeriesFrame.windows function index.html
 timeSeriesFrame.DataException.message attribute index.html
 kalmanFilter.main function index.html
 libregression.regression function index.html
@@ -35,6 +34,7 @@ timeSeriesFrame.TimeSeriesFrame.toCSV method index.html
 timeSeriesFrame.Dataframe.rowHeader method index.html
 regression.main function index.html
 regression.Regression.predict method index.html
+libregression.constrainedflexibleleastsquare function index.html
 timeSeriesFrame.TimeSeriesFrame.rowHeader method index.html
 kalmanFilter.KalmanFilter.R2 method index.html
 regression.ECRegression.isICConstraintable method index.html
