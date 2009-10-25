@@ -168,6 +168,7 @@ def kalman_predict(b, V, Phi, S):
     :return: :math:`(\beta_{t+1|t}, V_{t+1|t})`
     :rtype: Tuple of scipy.matrix<float>
 
+
     """
     (b, V, Phi, S) = map(scipy.matrix, (b, V, Phi, S))
     b = Phi * b
@@ -366,7 +367,6 @@ def kalman_filter(b,
                                 c)
         (b, V) = kalman_predict(b, V, Phi, Sigma)
     return beta
-
 
 def constrainedflexibleleastsquare(X,
                                    y,
