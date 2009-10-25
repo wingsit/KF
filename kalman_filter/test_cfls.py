@@ -1,6 +1,8 @@
 import csv, scipy, cvxopt
 from numpy import multiply as mlt
 from numpy import mat
+from cvxopt.solvers import qp
+
 #from libregression import *
 data = scipy.matrix(map(lambda x: map(float, x), csv.reader(open("sine_wave2.csv", "rb"))))
 
@@ -66,7 +68,9 @@ for i in xrange(t):
 for i in (P, q, bigG, g, A, b):
     print scipy.shape(i)
 
+#paraset = map(lambda x : cvxopt.sparse(cvxopt.matrix(x), "d"), (P, q, bigG, bigg, A, b))
 paraset = map(cvxopt.matrix, (P, q, bigG, bigg, A, b))
-beta =  mat(cvxopt.qp(*paraset)['x']).reshape(t,n).tolist()
+#P = cvxopt.sparse(P)
+beta =  mat(qp(*paraset)['x']).reshape(t,n).tolist()
 
 csv.writer(open("output_fls.csv", "w")).writerows(beta)

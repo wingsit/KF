@@ -3,7 +3,12 @@ from timeSeriesFrame import *
 from datetime import date
 from exc import *
 from copy import copy
-from libregression import ecregression
+
+try:
+    from clibregression import icregression
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import icregression
 from windows import *
 from rollingRegression import RollingRegression
 from icRegression import ICRegression
@@ -30,7 +35,7 @@ class ICRollingRegression(RollingRegression, ICRegression):
         beta = scipy.empty((self.t,self.n))
         for i,(d,y,X) in it:
             b = icregression(X,y,self.W, self.D, self.d, self.G, self.a, self.b, self.n)
-            print b.T
+#            print b.T
             beta[i,:] = b.T
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
         return self

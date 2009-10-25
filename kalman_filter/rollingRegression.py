@@ -3,7 +3,11 @@ from timeSeriesFrame import *
 from datetime import date
 from exc import *
 from copy import copy
-from libregression import regression
+try:
+    from clibregression import regression
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import regression
 from windows import *
 from regression import Regression
 DEBUG = 0

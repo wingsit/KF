@@ -2,22 +2,22 @@
 This module contains ordinary kalman filter classes
 """
 
-from regression import Regression
+from kalmanFilter import KalmanFilter
 import csv, scipy
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
 
 try:
-    from clibregression import kalman_predict, kalman_upd, kalman_filter
+    from clibregression import kalman_smoother
 except ImportError:
     print "Cannot import clibregression"
-    from libregression import kalman_predict, kalman_upd, kalman_filter
+    from libregression import kalman_smoother
 
 DEBUG = 0
 KAPPA = 1./100.0
     
-class KalmanFilter(Regression):
+class KalmanSmoother(KalmanFilter):
     """
-    This is a Kalman filter Class subclassed from Regression
+    This is a Kalman Smoother Class subclassed from Kalman Filter
     """
     intercept = True
     def __init__(self,
@@ -38,33 +38,7 @@ class KalmanFilter(Regression):
         :param intercept: include/exclude intercept in the regression
         :type intercept: boolean
         """
-        Regression.__init__(self, respond, regressors, intercept, **args)
-        if ( initBeta is None) and self.intercept:
-            self.initBeta = scipy.ones((self.n, 1))/float(self.n - 1)
-            self.initBeta[0] = 0
-        elif initBeta is not None and self.intercept:
-            self.initBeta = scipy.ones((n, 1))/float(n)
-        elif (initBeta is None) and (not self.intercept):
-            self.initBeta = scipy.ones((self.n, 1))/float(self.n)
-        else:
-            self.initBeta = scipy.zeros((self.n, 1))
-            self.initBeta = initBeta
-
-        if initVariance and self.intercept:
-            self.initVariance = scipy.zeros((self.n, self.n))
-            self.initVariance[1:, 1:] = initVariance
-        elif initVariance and (not self.intercept):
-            self.initVariance = initVariance
-        else:
-            self.initVariance = scipy.zeros((self.n, self.n))
-
-        if  Phi is None:
-            self.Phi = scipy.identity(self.n)
-        else:
-            self.Phi = Phi
-        self.paras = args.get("paras")
-        self.Sigma = Sigma
-        self.sigma = sigma
+        KalmanFilter.__init__(self, respond, regressors, intercept, Sigma, sigma, initBeta, initVariance, Phi, **args)
 
     def train(self):
         """
@@ -78,7 +52,8 @@ class KalmanFilter(Regression):
         s = self.sigma
         y = self.respond.data
         X = self.regressors.data
-        beta =  kalman_filter(b, V, Phi, y, X, s, S)
+        beta =  kalman_smoother(b, V, Phi, y, X, s, S)
+#        print beta
         self.est = TimeSeriesFrame(beta, 
                                    self.regressors.rheader, 
                                    self.regressors.cheader)
@@ -94,7 +69,7 @@ def main():
     regressors = stock[:, 1:]
     initBeta = scipy.matrix([0.55, 0.45]).T
     Sigma = scipy.matrix([[0.123873, -0.12387], [-0.12387,0.123873]])
-    obj = KalmanFilter(respond, regressors, intercept, Sigma*KAPPA, 0.12, initBeta = initBeta)
+    obj = KalmanSmoother(respond, regressors, intercept, Sigma*KAPPA, 0.12, initBeta = initBeta)
  
 #    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(7), 1.)
     obj.train()

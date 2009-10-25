@@ -2,8 +2,12 @@
 from kalmanFilter import KalmanFilter
 import csv,numpy, scipy
 from timeSeriesFrame import *
-from copy import deepcopy
-from libregression import kalman_predict, kalman_upd, kalman_filter
+
+try:
+    from clibregression import kalman_predict, kalman_upd, kalman_filter
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import kalman_predict, kalman_upd, kalman_filter
 from ecRegression import ECRegression
 DEBUG = 0
 KAPPA = 1
