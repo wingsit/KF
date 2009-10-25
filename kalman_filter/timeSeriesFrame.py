@@ -381,7 +381,7 @@ def StylusReader(writer):
     r = map(toDate, writer.pop(0))
     for i in xrange(len(writer)):
         writer[i] = map(float, writer[i])
-    data = scipy.transpose(scipy.matrix(writer))
+    data = scipy.transpose(scipy.matrix(writer, dtype = numpy.float64))
     return TimeSeriesFrame(data, r,c)
 
 # def windows(iterable, length=2, overlap = 0):

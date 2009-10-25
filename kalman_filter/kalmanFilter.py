@@ -5,7 +5,12 @@ This module contains ordinary kalman filter classes
 from regression import Regression
 import csv, scipy
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
-from libregression import kalman_filter
+
+try:
+    from clibregression import kalman_predict, kalman_upd, kalman_filter
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import kalman_predict, kalman_upd, kalman_filter
 
 DEBUG = 0
 KAPPA = 1./100.0
@@ -43,8 +48,8 @@ class KalmanFilter(Regression):
             self.initBeta = scipy.ones((self.n, 1))/float(self.n)
         else:
             self.initBeta = scipy.zeros((self.n, 1))
-            print initBeta
-            print self.initBeta
+#            print initBeta
+#            print self.initBeta
             self.initBeta = initBeta
 
         if initVariance and self.intercept:

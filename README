@@ -2,6 +2,9 @@ This project was started to test different avaiable tools to track mutual funds 
 
 The License for this project is BSD.
 
+Documentation:
+http://packages.python.org/KF/
+
 Dependency:
 
 This project requires
@@ -32,33 +35,27 @@ regression.py imposes no state constraints on the model
 ec*.py imposes Equality Constraints on the model. For example, ecRegression.py is a regression model which must satisfy Equality Constraitns.
 ic*.py imposes Inequality Constraints and Equality Constraints. For example icRegression.py is a constrained regression model which has both equality and inequality constraints.
 
-Organisation: Most of the reusable estimation formulae are written in libregression.py except when it is called from external library.
+Organisation: Most of the computation functions are located in libregression.py
 
 Implemented and Tested:
 regression.py
 ecRegression.py
 icRegression.py
-
-Implemented:
-
 rollingRegression.py
 ecRollingRegression.py
 icRollingRegression.py
 kalmanFilter.py
 ecKalmanFilter.py
 icKalmanFilter.py
-
-To-do:
-KalmanSmoother
+Constrained Flexible Least Squares
 
 To Do:
+Kalman Smoother
 Flexible Least Squares
-Constrained Flexible Least Squares
+Maximum Liklihood Method for *Kalman*.py method
 Unit Testing Suite
 Statistical Functions for TimeSeriesFrame and DataFrame
-Documentation uploaded properly
-Cython compiled module
-
+Cython compiled libregression
 
 Please feel free to drop a comment, forward this project and contribute!!
 

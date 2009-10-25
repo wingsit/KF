@@ -3,6 +3,11 @@ from cvxopt.solvers import qp
 from numpy import multiply as mlt
 from numpy import mat
 
+import numpy as np
+cimport numpy as np
+
+DTYPE = np.float32
+
 cvxopt.solvers.options['show_progress'] = False
 
 """
@@ -15,7 +20,7 @@ This file contains a list of algoritm that is used for estimation
 """
 DEBUG = 0
 
-def regression(X, y, W):
+def regression(np.ndarray[np.float64_t, ndim=2] X, np.ndarray[np.float64_t, ndim=2] y, np.ndarray[np.float64_t, ndim=2] W):
     """
     Return the estimated weight based on ordinary regression model
 
@@ -37,7 +42,7 @@ def regression(X, y, W):
         print "(X.T * W * X): ", (X.T * W * X)
     return (X.T * W * X).I*(X.T * W * y)
 
-def ecregression(X,y,W,D,d):
+def ecregression(np.ndarray[np.float64_t, ndim=2] X, np.ndarray[np.float64_t, ndim=2] y, np.ndarray[np.float64_t, ndim=2] W,np.ndarray[np.float64_t, ndim=2] D,np.ndarray[np.float64_t, ndim=2] d):
     r"""
     This return the estimated weight on the following regression problem
     
@@ -73,7 +78,15 @@ def ecregression(X,y,W,D,d):
     lamb = (D * covinv * D.T).I * (D * covinv * X.T * W * y - d)
     return  covinv * (X.T * W * y - D.T * lamb)
 
-def icregression(X,y, W, D,d,G,a,b,n):
+def icregression(np.ndarray[np.float64_t, ndim=2] X,
+                 np.ndarray[np.float64_t, ndim=2] y,
+                 np.ndarray[np.float64_t, ndim=2] W,
+                 np.ndarray[np.float64_t, ndim=2] D,
+                 np.ndarray[np.float64_t, ndim=2] d,
+                 np.ndarray[np.float64_t, ndim=2] G,
+                 np.ndarray[np.float64_t, ndim=2] a,
+                 np.ndarray[np.float64_t, ndim=2] b,
+                 unsigned int n):
     r"""
     This return the estimated weight on the following regression problem
     
@@ -105,7 +118,10 @@ def icregression(X,y, W, D,d,G,a,b,n):
     paraset = map(cvxopt.matrix , (P,q,bigG,h,D,d))
     return qp(*paraset)['x']
 #============================================================
-def kalman_predict(b, V, Phi, S):
+def kalman_predict(np.ndarray[np.float64_t, ndim=2] b,
+                   np.ndarray[np.float64_t, ndim=2] V,
+                   np.ndarray[np.float64_t, ndim=2] Phi,
+                   np.ndarray[np.float64_t, ndim=2] S):
     r"""
     This fucntion return the predicted ..math: \beta, V
     """
@@ -114,23 +130,36 @@ def kalman_predict(b, V, Phi, S):
     V = Phi * V * Phi.T + S
     return b, V
 
-def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a = None, b = None):
+def kalman_upd( np.ndarray[np.float64_t, ndim=2] beta,
+                np.ndarray[np.float64_t, ndim=2] V,
+                np.ndarray[np.float64_t, ndim=2] y,
+                np.ndarray[np.float64_t, ndim=2] X,
+                double s,
+                np.ndarray[np.float64_t, ndim=2] S,
+                int switch = 0,
+                np.ndarray[np.float64_t, ndim=2] D = None,
+                np.ndarray[np.float64_t, ndim=2] d = None,
+                np.ndarray[np.float64_t, ndim=2] G = None,
+                np.ndarray[np.float64_t, ndim=2] a = None,
+                np.ndarray[np.float64_t, ndim=2] b = None):
     """switch:
         0 | no constraints
         1 | equality constraints
         2 | inequality constraints
     """
+    cdef np.ndarray[np.float64_t, ndim=2] e, K, P, q, bigG, h, temp
+    cdef Py_ssize_t n
     e = y - X * beta
     K = V * X.T * ( s + X * V * X.T).I
     beta = beta + K * e
     if switch == 1:
-        D = scipy.matrix(D)
-        d = scipy.matrix(d)
+#        D = scipy.matrix(D)
+#        d = scipy.matrix(d)
         beta = beta - S * D.T * ( D * S * D.T).I * ( D * beta - d)
     elif switch == 2:
-        G = scipy.matrix(G)
-        a = scipy.matrix(a)
-        b = scipy.matrix(b)
+#        G = scipy.matrix(G)
+#        a = scipy.matrix(a)
+#        b = scipy.matrix(b)
         n = len(beta)
         P = 2* V.I
         q = -2 * V.I.T * beta
@@ -141,15 +170,28 @@ def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a =
         h[:n, :] = -a
         h[n:, :] = b
         paraset = map(cvxopt.matrix , (P,q,bigG,h,D,d))
-        beta = qp(*paraset)['x']
+        beta = mat(qp(*paraset)['x'])
+        
     temp = K*X
     V = (scipy.identity(temp.shape[0]) - temp) * V
     return (beta,V, e,K)
 
-def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None, G = None, a = None, c = None):
-    n = scipy.shape(X)[1]
-    beta = scipy.empty(scipy.shape(X))
-    n = len(b)
+def kalman_filter(np.ndarray[np.float64_t, ndim=2] b,
+                  np.ndarray[np.float64_t, ndim=2] V,
+                  np.ndarray[np.float64_t, ndim=2] Phi,
+                  np.ndarray[np.float64_t, ndim=2] y,
+                  np.ndarray[np.float64_t, ndim=2] X,
+                  double sigma,
+                  np.ndarray[np.float64_t, ndim=2] Sigma,
+                  int switch = 0,
+                  np.ndarray[np.float64_t, ndim=2] D = None,
+                  np.ndarray[np.float64_t, ndim=2] d = None,
+                  np.ndarray[np.float64_t, ndim=2] G = None,
+                  np.ndarray[np.float64_t, ndim=2] a = None,
+                  np.ndarray[np.float64_t, ndim=2]c = None):
+    cdef Py_ssize_t n = scipy.shape(X)[1]
+    cdef np.ndarray[np.float64_t, ndim=2] beta = scipy.empty(scipy.shape(X))
+#    n = len(b)
     if D is None:
         D = scipy.ones((1,n))
     if d is None:
@@ -168,17 +210,20 @@ def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None,
         (b, V) = kalman_predict(b,V,Phi, Sigma)
     return beta
 
-def constrainedflexibleleastsquare(X, y, lamb, W1, W2, Phi, D, d, smallG, a, b):
+def constrainedflexibleleastsquare(np.ndarray[np.float64_t, ndim=2] X, np.ndarray[np.float64_t, ndim=2] y, double lamb, double W1, np.ndarray[np.float64_t, ndim=2] W2, np.ndarray[np.float64_t, ndim=2] Phi, np.ndarray[np.float64_t, ndim=2] D, d, np.ndarray[np.float64_t, ndim=2] smallG,  a,  b):
+    cdef Py_ssize_t t,n,i
+    cdef np.ndarray[np.float64_t, ndim=2] P, G, A, bigG
+    cdef np.ndarray[np.float64_t, ndim=2] bigg, q
     t, n = scipy.shape(X)
-    P = scipy.empty( (t * n, t * n))
-    G = scipy.empty( (2*n, n))
+    P = scipy.empty( (t * n, t * n), dtype = DTYPE)
+    G = scipy.empty( (2*n, n), dtype = DTYPE)
     G[0:n, 0:n] = smallG
     G[n: 2*n, 0:n] = -smallG
-    g = scipy.empty( (2*n, 1))
+    g = scipy.empty( (2*n, 1), dtype = DTYPE)
     g[0:n] = b
     g[n:2*n] = -a
 ####P#####
-    for i in xrange(t):
+    for i in range(t):
         if i == 0:
             p = 2* W1* mlt(X[i].T, X[i]) + lamb * Phi.T * W2 * Phi
         elif i == t-1:
@@ -199,19 +244,19 @@ def constrainedflexibleleastsquare(X, y, lamb, W1, W2, Phi, D, d, smallG, a, b):
     gr, gc = scipy.shape(G)
     bigG = scipy.empty((gr*t, gc*t))
         
-    for i in xrange(t):
+    for i in range(t):
         bigG[i*gr:(i+1)*gr, i*gc:(i+1)*gc] = G
 
     bigg = scipy.empty((gr*t,1))
-    for i in xrange(t):
+    for i in range(t):
         bigg[i*gr:(i+1)*gr] = g
                 
     dr, dc = scipy.shape(D)
     A = scipy.empty((t* dr,t* dc))
-    for i in xrange(t):
+    for i in range(t):
         A[i*dr: (i+1) * dr, i*dc:(i+1)*dc] = D
         b = scipy.empty((t, 1))
-    for i in xrange(t):
+    for i in range(t):
         b[i:(i+1)] = d
 
     paraset = map(cvxopt.matrix, (P, q, bigG, bigg, A, b))

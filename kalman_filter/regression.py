@@ -4,7 +4,11 @@ from timeSeriesFrame import *
 from datetime import date
 from exc import *
 from copy import copy
-from libregression import *
+try:
+    from clibregression import *
+except ImportError:
+    print "Cannot import C module"
+    from libregression import *
 
 DEBUG = 0
 
@@ -35,7 +39,7 @@ class Regression(object):
             self.weight = scipy.identity(self.t)
 
         self.X, self.y, self.W = map(scipy.matrix, (self.regressors.data, self.respond.data, self.weight))
-        
+       
     def train(self):
         """
         This fucntion will estimate the weight in the regression.
@@ -117,8 +121,8 @@ class Regression(object):
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
         rsq = 1.0 - sser/sstol
-        print sser
-        print sstol
+#        print sser
+#        print sstol
 #        assert 0. < rsq and rsq < 1.
         return rsq
     
