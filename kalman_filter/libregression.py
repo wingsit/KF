@@ -1,7 +1,34 @@
 """
-This file contains a list of algoritm that is used for estimation
-    some optmisation should be done in future.
-    Naming convention:
+This module contains a list of algoritm that is used for estimation. These
+algorithm are unsafe and all these type and bound check should be done in the wrapper
+level.
+
+List of algorithm that has been inplemented:
+
+Ordinary Least Squares
+Ordinary Least Squares with Linear Equality Constraints
+Ordinary Least Squares with Linear Inequality Constraints
+
+Stepwise Least Squares
+Stepwise Least Squares with Linear Equality Constraints
+Stepwise Least Squares with Linear Inequality Constraints
+
+Kalman Filter
+Kalman Smoother
+Kalman Filter with Linear Equality Constraints
+Kalman Filter with Linear Inequality Constraints
+
+Flexible Least Squares with Linear Inequality Constraints
+
+*UNTESTED:*
+Kalman Smoother with Linear Equality Constraints
+Kalman Smoother with Linear Inequality Constraints
+
+A lot of matrix inversion are used in these function and singularity is not checked.
+Potential optimisation includes more stable inversion, large scale QP solver for
+Flexible Least Squares
+
+Naming convention:
         function with no ec/ic prefix are estimator for unconstrained problem
         ec* prefix: this is for equality constraints.
         ic* prefixL this is for inequality constraints.
@@ -20,8 +47,10 @@ DEBUG = 0
 
 def regression(X, y, W):
     """
-    Return the estimated weight based on ordinary regression model
+    Return the estimated weight based on ordinary regression model. The algorithm used to solve for the weight is done by matrix inversion.
+    
 
+    
     :param X: Independent variable
     :type X: scipy.matrix<float>
     :param y: Dependent variable
@@ -33,7 +62,7 @@ def regression(X, y, W):
 
 
     .. math::
-       (X^T\; W \; X )^{-1} X^T W  y
+       \hat{\beta} = (X^T\; W \; X )^{-1} X^T W  y
 
     """
     if DEBUG:
@@ -45,7 +74,6 @@ def regression(X, y, W):
 
 def ecregression(X, y, W, D, d):
     r"""
-    This return the estimated weight on the following regression problem
 
     :param X: Independent variable
     :type X: scipy.matrix<float>
@@ -60,7 +88,7 @@ def ecregression(X, y, W, D, d):
     :return: :math:`\hat{\beta}`
     :rtype: scipy.matrix<float>
 
-
+    This return the estimated weight on the following regression problem
     
     .. math::
        y = X \beta

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 #from distutils.core import setup, find_packages
 #import py2exe
 setup(name='KF',
-      version='0.1.3',
+      version='0.1.5',
       install_requires = ['scipy', 'cvxopt', 'matplotlib', 'numpy'],
       description = ("Fund performance tracker"),
       keywords = 'kalman filter regression fund performance replication tracker',
