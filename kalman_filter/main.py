@@ -1,12 +1,15 @@
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
 from regression import *
 from rollingRegression import *
-from icRollingRegression import ICRollingRegression
-from ecRollingRegression import ECRollingRegression
-from ecKalmanFilter import ECKalmanFilter
-from kalmanFilter import KalmanFilter
-from kalmanSmoother import KalmanSmoother
-from icKalmanFilter import ICKalmanFilter
+#from icRollingRegression import ICRollingRegression
+#from ecRollingRegression import ECRollingRegression
+
+from kalmanFilter import *
+
+##from ecKalmanFilter import ECKalmanFilter
+##from kalmanFilter import KalmanFilter
+##from kalmanSmoother import KalmanSmoother
+##from icKalmanFilter import ICKalmanFilter
 from icFlexibleLeastSquare import ICFlexibleLeastSquare
 
 def main():
@@ -52,17 +55,17 @@ def main():
     kalmans = KalmanSmoother(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
 
     
-    eckalman = ECKalmanFilter(respond, regressors, intercept, Sigma, 0.12, eta = initBeta).train()
+    eckalman = ECKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta, D = D, d = d, G = G, a = a, b = b).train()
 
 
-    ickalman = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta).train()
+    ickalman = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta, D = D, d = d, G = G, a = a, b = b).train()
     icfls = ICFlexibleLeastSquare(respond, regressors, intercept, 1.).train()
 
     all_model = [reg, ecreg, icreg, rreg, ecrreg, icrreg, kalman, kalmans, eckalman, ickalman, icfls]
     for i in all_model:
         print i
         print "\t", i.R2()
-#        i.getEstimate().plot()
+        i.getEstimate().plot()
 #    raw_input()
 if __name__ == "__main__":
     main()
