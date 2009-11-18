@@ -2,17 +2,22 @@
 This module contains ordinary kalman filter classes
 """
 
-from regression import Regression
+from regression import *
 import csv, scipy
 from timeSeriesFrame import TimeSeriesFrame, StylusReader
-from libregression import kalman_filter
+
+try:
+    from clibregression import kalman_predict, kalman_upd, kalman_filter
+except ImportError:
+    print "Cannot import clibregression"
+    from libregression import kalman_predict, kalman_upd, kalman_filter
 
 DEBUG = 0
 KAPPA = 1./100.0
     
 class KalmanFilter(Regression):
     """
-    This is a KalmanFilter Class subclassed from Regression
+    This is a Kalman filter Class subclassed from Regression
     """
     intercept = True
     def __init__(self,
@@ -43,8 +48,6 @@ class KalmanFilter(Regression):
             self.initBeta = scipy.ones((self.n, 1))/float(self.n)
         else:
             self.initBeta = scipy.zeros((self.n, 1))
-            print initBeta
-            print self.initBeta
             self.initBeta = initBeta
 
         if initVariance and self.intercept:
@@ -80,7 +83,170 @@ class KalmanFilter(Regression):
                                    self.regressors.rheader, 
                                    self.regressors.cheader)
         return self
-    
+
+class KalmanSmoother(KalmanFilter):
+    """
+    This is a Kalman Smoother Class subclassed from Kalman Filter
+    """
+    intercept = True
+    def __init__(self,
+                 respond = None,
+                 regressors = None,
+                 intercept = False,
+                 Sigma = None,
+                 sigma = None,
+                 initBeta = None,
+                 initVariance = None,
+                 Phi = None,
+                 **args):
+        """
+        :param respond: Dependent time series
+        :type respond: TimeSeriesFrame<double>
+        :param regressors: Independent time serieses
+        :type regressors: TimeSeriesFrame<double>
+        :param intercept: include/exclude intercept in the regression
+        :type intercept: boolean
+        """
+        KalmanFilter.__init__(self, respond, regressors, intercept, Sigma, sigma, initBeta, initVariance, Phi, **args)
+
+    def train(self):
+        """
+        This fucntion will start the estimation. This is separated from addData.
+        """
+        beta = scipy.empty((self.t, self.n))
+        b = self.initBeta
+        V = self.initVariance
+        Phi = self.Phi
+        S = self.Sigma
+        s = self.sigma
+        y = self.respond.data
+        X = self.regressors.data
+        beta =  kalman_smoother(b, V, Phi, y, X, s, S)
+        self.est = TimeSeriesFrame(beta, 
+                                   self.regressors.rheader, 
+                                   self.regressors.cheader)
+        return self
+
+class ECKalmanFilter(KalmanFilter, ECRegression):
+    """This is a KalmanFilter Class subclassed from Regression"""
+    intercept = True
+    def __init__(self,
+                 respond = None,
+                 regressors = None,
+                 intercept = False,
+                 Sigma = None,
+                 sigma = None,
+                 initBeta = None,
+                 initVariance = None,
+                 Phi = None,
+                 D = None,
+                 d = scipy.matrix(1.00),
+                 **args):
+        """Input: paras where they are expected to be tuple or dictionary"""
+        KalmanFilter.__init__(self,
+                              respond,
+                              regressors,
+                              intercept,
+                              Sigma,
+                              sigma,
+                              initBeta,
+                              initVariance,
+                              Phi,
+                              **args)
+        ECRegression.__init__(self,
+                              respond,
+                              regressors,
+                              intercept,
+                              D,
+                              d,
+                              **args)
+    def train(self):
+        """This fucntion will start the estimation. This is separated from addData."""
+        beta = scipy.empty((self.t,self.n))
+        b = self.initBeta
+        V = self.initVariance
+        Phi = self.Phi
+        S = self.Sigma
+        (b, V) = kalman_predict(b,V,Phi, S)
+        y = self.respond.data
+        X = self.regressors.data
+        D = self.D
+        d = self.d
+        s = self.sigma
+        beta =  kalman_filter(b, V, Phi, y, X, s, S, 1, D, d)
+
+        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
+        return self
+
+class ICKalmanFilter(ECKalmanFilter, ICRegression):
+    """This is a KalmanFilter Class subclassed from Regression"""
+    intercept = True
+    def __init__(self,
+                 respond = None,
+                 regressors = None,
+                 intercept = False,
+                 Sigma = None,
+                 sigma = None,
+                 initBeta = None,
+                 initVariance = None,
+                 Phi = None,
+                 D = None,
+                 d = scipy.matrix(1.00),
+                 G = None,
+                 a = None,
+                 b = None,
+                 **args):
+        """Input: paras where they are expected to be tuple or dictionary"""
+        ECKalmanFilter.__init__(self,
+                                respond,
+                                regressors,
+                                intercept,
+                                Sigma,
+                                sigma,
+                                initBeta,
+                                initVariance,
+                                Phi,
+                                D,
+                                d,
+                                **args)
+        
+        ICRegression.__init__(self,
+                              respond,
+                              regressors,
+                              intercept,
+                              D,
+                              d,
+                              G,
+                              a,
+                              b,
+                              **args)
+
+
+
+
+
+    def train(self):
+        """
+        This fucntion will start the estimation. This is separated from addData.
+        """
+        beta = scipy.empty((self.t,self.n))
+        b = self.initBeta
+        V = self.initVariance
+        Phi = self.Phi
+        s = self.sigma
+        S = self.Sigma
+        y = self.respond.data
+        X = self.regressors.data
+        D = self.D
+        d = self.d
+        G = self.G
+        a = self.a
+        c = self.b
+        beta =  kalman_filter(b, V, Phi, y, X, s, S, 2, D, d, G, a, c)
+        self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
+        return self
+
+																														
 def main():
 #    try:
     intercept = False

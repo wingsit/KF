@@ -2,12 +2,18 @@ This project was started to test different avaiable tools to track mutual funds 
 
 The License for this project is BSD.
 
+Documentation:
+http://packages.python.org/KF/
+
 Dependency:
 
 This project requires
 Scipy (http://www.scipy.org/)
 Numpy (http://numpy.scipy.org/)
 CVXOPT (http://abel.ee.ucla.edu/cvxopt/)
+
+Optional
+Matplotlib (http://matplotlib.sourceforge.net/)
 
 The primary data structure is DataFrame in timeSeriesFrame.py although this is not used directly. The container for time series data is TimeSeriesFrame which are used by Regression. Essentially, this is just a data structure with a scipy.matrix for tabular data and 2 lists which contains row and column header information. Later in the future I might change it it numpy.maskedarray to handle missing. The primary features for TimeSeriesFrame are simple slicing and iterators in both dimensions. This was designed in a way such that it is easy to run operation on each time series or each date. Later I might subclass it with http://scikits.appspot.com/scikits but this is not in near future.
 
@@ -32,33 +38,27 @@ regression.py imposes no state constraints on the model
 ec*.py imposes Equality Constraints on the model. For example, ecRegression.py is a regression model which must satisfy Equality Constraitns.
 ic*.py imposes Inequality Constraints and Equality Constraints. For example icRegression.py is a constrained regression model which has both equality and inequality constraints.
 
-Organisation: Most of the reusable estimation formulae are written in libregression.py except when it is called from external library.
+Organisation: Most of the computation functions are located in libregression.py
 
 Implemented and Tested:
 regression.py
 ecRegression.py
 icRegression.py
-
-Implemented:
-
 rollingRegression.py
 ecRollingRegression.py
 icRollingRegression.py
 kalmanFilter.py
 ecKalmanFilter.py
 icKalmanFilter.py
-
-To-do:
-KalmanSmoother
+Constrained Flexible Least Squares
 
 To Do:
+Kalman Smoother
 Flexible Least Squares
-Constrained Flexible Least Squares
+Maximum Liklihood Method for *Kalman*.py method
 Unit Testing Suite
 Statistical Functions for TimeSeriesFrame and DataFrame
-Documentation uploaded properly
-Cython compiled module
-
+Cython compiled libregression
 
 Please feel free to drop a comment, forward this project and contribute!!
 

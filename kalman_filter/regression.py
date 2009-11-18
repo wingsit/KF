@@ -4,7 +4,11 @@ from timeSeriesFrame import *
 from datetime import date
 from exc import *
 from copy import copy
-from libregression import *
+try:
+    from clibregression import *
+except ImportError:
+    print "Cannot import C module"
+    from libregression import *
 
 DEBUG = 0
 
@@ -35,7 +39,7 @@ class Regression(object):
             self.weight = scipy.identity(self.t)
 
         self.X, self.y, self.W = map(scipy.matrix, (self.regressors.data, self.respond.data, self.weight))
-        
+       
     def train(self):
         """
         This fucntion will estimate the weight in the regression.
@@ -117,9 +121,7 @@ class Regression(object):
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
         rsq = 1.0 - sser/sstol
-        print sser
-        print sstol
-#        assert 0. < rsq and rsq < 1.
+        assert 0. < rsq and rsq < 1.
         return rsq
     
 class ECRegression(Regression):
@@ -132,7 +134,7 @@ class ECRegression(Regression):
         if isinstance(D,numpy.ndarray):
             self.D = scipy.matrix(D)
         else:
-            self.D = scipy.matrix(scipy.ones((self.n,1)))
+            self.D = scipy.matrix(scipy.ones((1, self.n)))
             self.D[0,0] = 0
         pass
 
@@ -154,6 +156,9 @@ class ECRegression(Regression):
         return self
 
     def isECConstraintable(self): return True
+
+    def __str__(self):
+        return self.__class__.__name__
 
 class ICRegression(ECRegression):
     """ This is an abstruct class for Regression Type of problem."""
