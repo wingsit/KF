@@ -43,8 +43,8 @@ class ECRegression(Regression):
 #        print beta
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
-
-
+        return self
+    
     def isECConstraintable(self): return True
 
 

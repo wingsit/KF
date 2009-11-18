@@ -1,4 +1,4 @@
-import csv,scipy, numpy, cvxopt
+import csv, scipy, numpy, cvxopt
 from cvxopt.solvers import qp
 from timeSeriesFrame import *
 from datetime import date
@@ -31,6 +31,9 @@ class Regression(object):
             self.regressors.data = scipy.hstack((scipy.ones((self.t,1)), self.regressors.data))
             self.regressors.cheader.insert(0,"Intercept")
             self.n = self.n + 1
+        if self.weight is None:
+            self.weight = scipy.identity(self.t)
+
         self.X, self.y, self.W = map(scipy.matrix, (self.regressors.data, self.respond.data, self.weight))
         
     def train(self):
@@ -42,7 +45,7 @@ class Regression(object):
         if DEBUG:
             print "X: ", self.X
             print "y: ", self.y
-            print "W: ",self.W
+            print "W: ", self.W
         beta = regression(self.X,self.y,self.W)
 #        beta =  (self.X.T * self.W * self.X).I*(self.X.T * self.W * self.y) # will optimise it one day.... but this is not too slow
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
@@ -84,8 +87,7 @@ class Regression(object):
         :return: TimeSeriesFrame of estimate
         :rtype: TimeSeriesFram<double>
         """
-#        print self.X * self.est.data[0].T
-        pre = TimeSeriesFrame( (self.X * self.est.data[0].T).sum(axis= 1), self.respond.rheader, self.respond.cheader)
+        pre = TimeSeriesFrame( scipy.multiply(self.X ,self.est.data).sum(axis = 1), self.respond.rheader, self.respond.cheader)
         if time is None: return pre
         elif isinstance(time, date): return pre[time]
         else: raise TypeError("time is not in datetime.date format")
@@ -114,8 +116,12 @@ class Regression(object):
         """
         sser = sum(i**2 for i in (self.respond.data - self.predict().data))
         sstol = sum(i**2 for i in (self.respond.data - sum(self.respond.data)/len(self.respond.data)))
-        return  1.0 - sser/sstol
-
+        rsq = 1.0 - sser/sstol
+        print sser
+        print sstol
+#        assert 0. < rsq and rsq < 1.
+        return rsq
+    
 class ECRegression(Regression):
     def __init__(self, respond = None, regressors = None, intercept = False, D = None, d = None, **args):
         Regression.__init__(self,respond, regressors, intercept, **args)
@@ -142,14 +148,10 @@ class ECRegression(Regression):
             print "y: ", self.y
             print "D: ", self.D
             print "d: ", self.d
-##        covinv = (self.X.T * self.W * self.X).I
-##        lamb = (self.D * covinv * self.D.T).I * (self.D * covinv * self.X.T * self.W * self.y - self.d)
-##        beta = covinv * (self.X.T * self.W * self.y - self.D.T * lamb)
         beta = ecregression(self.X, self.y, self.W, self.D, self.d)
-#        print beta
         beta =  scipy.kron(scipy.ones((self.t, 1)),beta.T )
         self.est = TimeSeriesFrame(beta, self.regressors.rheader, self.regressors.cheader)
-
+        return self
 
     def isECConstraintable(self): return True
 

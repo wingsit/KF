@@ -7,7 +7,7 @@ from libregression import regression
 from windows import *
 from regression import Regression
 DEBUG = 0
-WINDOWSIZE = 36
+WINDOWSIZE = 24
 
 class RollingRegression(Regression):
     """ This is an abstruct class for Regression Type of problem."""
@@ -38,7 +38,7 @@ def main():
     intercept = True
     obj = RollingRegression(respond, regressors, intercept, weight = weight, window = WINDOWSIZE).train()
 
-    print obj.getEstimate().toCSV()
+    obj.getEstimate().plot()
     print obj.predict()
 #    print obj.predict(date(1999,1,1))
     print obj.error()

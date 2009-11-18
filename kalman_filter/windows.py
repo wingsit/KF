@@ -28,7 +28,7 @@ def headRollingWindows(iterable, window, overlap):
         iterable = list(iterable)
     i = -overlap
     diff = window - overlap
-    while i <=len(iterable)-window:
+    while i <= len(iterable) - window:
         if i < 0:
             yield iterable[:window]
         else: 

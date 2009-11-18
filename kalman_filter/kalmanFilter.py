@@ -8,7 +8,7 @@ from timeSeriesFrame import TimeSeriesFrame, StylusReader
 from libregression import kalman_filter
 
 DEBUG = 0
-KAPPA = 1./1000.0
+KAPPA = 1./100.0
     
 class KalmanFilter(Regression):
     """
@@ -35,23 +35,25 @@ class KalmanFilter(Regression):
         """
         Regression.__init__(self, respond, regressors, intercept, **args)
         if ( initBeta is None) and self.intercept:
-            self.initBeta = scipy.ones((self.n, 1))/float(self.n-1)
+            self.initBeta = scipy.ones((self.n, 1))/float(self.n - 1)
             self.initBeta[0] = 0
-        elif initBeta and self.intercept:
+        elif initBeta is not None and self.intercept:
             self.initBeta = scipy.ones((n, 1))/float(n)
         elif (initBeta is None) and (not self.intercept):
             self.initBeta = scipy.ones((self.n, 1))/float(self.n)
         else:
-            self.initBeta = scipy.zero((self.n, 1))
-            self.initBeta[1:] = initBeta
+            self.initBeta = scipy.zeros((self.n, 1))
+            print initBeta
+            print self.initBeta
+            self.initBeta = initBeta
 
         if initVariance and self.intercept:
-            self.initVariance = scipy.zero((self.n, self.n))
+            self.initVariance = scipy.zeros((self.n, self.n))
             self.initVariance[1:, 1:] = initVariance
         elif initVariance and (not self.intercept):
             self.initVariance = initVariance
         else:
-            self.initVariance = scipy.identity(self.n)*KAPPA
+            self.initVariance = scipy.zeros((self.n, self.n))
 
         if  Phi is None:
             self.Phi = scipy.identity(self.n)
@@ -82,18 +84,22 @@ class KalmanFilter(Regression):
 def main():
 #    try:
     intercept = False
-    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
+    stock_data = list(csv.reader(open("sine_wave.csv", "rb")))
     stock = StylusReader(stock_data)
     del stock_data
     respond = stock[:, 0]
     regressors = stock[:, 1:]
-    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(7), 1.)
+    initBeta = scipy.matrix([0.55, 0.45]).T
+    Sigma = scipy.matrix([[0.123873, -0.12387], [-0.12387,0.123873]])
+    obj = KalmanFilter(respond, regressors, intercept, Sigma*KAPPA, 0.12, initBeta = initBeta)
+ 
+#    obj = KalmanFilter(respond, regressors, intercept, scipy.identity(7), 1.)
     obj.train()
-    print obj.getEstimate().data
+#    print obj.getEstimate().data
 #    print obj.getEstimate(date(2001,1,1))
 #    print obj.predict()
 #    print obj.predict(date(2001,1,1))
-    obj.est.toCSV("simulated_dodge_cox.csv")
+#    obj.est.toCSV("simulated_dodge_cox.csv")
 #    print obj.R2()
     obj.getEstimate().plot()
 #    import code; code.interact(local=locals())

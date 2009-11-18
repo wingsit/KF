@@ -28,6 +28,11 @@ def regression(X, y, W):
        (X^T\; W \; X )^{-1} X^T W  y
 
     """
+    if DEBUG:
+        print "X: ", X
+        print "y: ", y
+        print "W: ", W
+        print "(X.T * W * X): ", (X.T * W * X)
     return (X.T * W * X).I*(X.T * W * y)
 
 def ecregression(X,y,W,D,d):
@@ -54,6 +59,14 @@ def ecregression(X,y,W,D,d):
        \end{eqnarray*}
 
     """
+    if DEBUG:
+        print "X: ", X
+        print "y: ", y
+        print "W: ", W
+        print "D: ", D
+        print "d: ", d
+        print "(X.T * W * X).I",  (X.T * W * X).I
+        print "(D * covinv * D.T).I: ", (D * (X.T * W * X).I * D.T).I
     covinv = (X.T * W * X).I
     lamb = (D * covinv * D.T).I * (D * covinv * X.T * W * y - d)
     return  covinv * (X.T * W * y - D.T * lamb)
@@ -111,6 +124,7 @@ def kalman_upd(beta, V, y, X, s, S, switch = 0,D = None, d = None, G = None, a =
 def kalman_filter(b, V, Phi,  y, X, sigma, Sigma, switch = 0,D = None, d = None, G = None, a = None, c = None):
     n = scipy.shape(X)[1]
     beta = scipy.empty(scipy.shape(X))
+    n = len(b)
     if D is None:
         D = scipy.ones((1,n))
     if d is None:

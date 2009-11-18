@@ -1,0 +1,4 @@
+include *.txt *.html
+include LICENSE
+include README
+recursive-include kalman_filter *.py *.csv

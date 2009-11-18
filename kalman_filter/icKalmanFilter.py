@@ -39,6 +39,7 @@ class ICKalmanFilter(ECKalmanFilter, ICRegression):
                                 D,
                                 d,
                                 **args)
+        
         ICRegression.__init__(self,
                               respond,
                               regressors,
@@ -78,18 +79,20 @@ class ICKalmanFilter(ECKalmanFilter, ICRegression):
 def main():
 #    try:
     intercept = False
-    stock_data = list(csv.reader(open("dodge_cox.csv", "rb")))
+    stock_data = list(csv.reader(open("sine_wave.csv", "rb")))
     stock = StylusReader(stock_data)
     del stock_data
     respond = stock[:,0]
     regressors = stock[:,1:]
-    obj = ICKalmanFilter(respond, regressors, intercept, scipy.identity(7)*KAPPA, 0.01, Phi = scipy.identity(7)*0.95)
+    initBeta = scipy.matrix([0.528744, 0.471256]).T
+    Sigma = scipy.matrix([[0.123873, -0.12387], [-0.12387,0.123873]])
+    obj = ICKalmanFilter(respond, regressors, intercept, Sigma, 0.12, initBeta = initBeta)
     obj.train()
-    print obj.getEstimate()
-    print obj.getEstimate(date(2001,1,1))
-    print obj.predict()
-    print obj.predict(date(2001,1,1))
-    obj.est.toCSV("default2.csv")
+#    print obj.getEstimate()
+#    print obj.getEstimate(date(2001,1,1))
+#    print obj.predict()
+#    print obj.predict(date(2001,1,1))
+#    obj.est.toCSV("default2.csv")
     print obj.R2()
     obj.est.plot()
 
