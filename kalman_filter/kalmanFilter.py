@@ -84,48 +84,48 @@ class KalmanFilter(Regression):
                                    self.regressors.cheader)
         return self
 
-class KalmanSmoother(KalmanFilter):
-    """
-    This is a Kalman Smoother Class subclassed from Kalman Filter
-    """
-    intercept = True
-    def __init__(self,
-                 respond = None,
-                 regressors = None,
-                 intercept = False,
-                 Sigma = None,
-                 sigma = None,
-                 initBeta = None,
-                 initVariance = None,
-                 Phi = None,
-                 **args):
-        """
-        :param respond: Dependent time series
-        :type respond: TimeSeriesFrame<double>
-        :param regressors: Independent time serieses
-        :type regressors: TimeSeriesFrame<double>
-        :param intercept: include/exclude intercept in the regression
-        :type intercept: boolean
-        """
-        KalmanFilter.__init__(self, respond, regressors, intercept, Sigma, sigma, initBeta, initVariance, Phi, **args)
+# class KalmanSmoother(KalmanFilter):
+#     """
+#     This is a Kalman Smoother Class subclassed from Kalman Filter
+#     """
+#     intercept = True
+#     def __init__(self,
+#                  respond = None,
+#                  regressors = None,
+#                  intercept = False,
+#                  Sigma = None,
+#                  sigma = None,
+#                  initBeta = None,
+#                  initVariance = None,
+#                  Phi = None,
+#                  **args):
+#         """
+#         :param respond: Dependent time series
+#         :type respond: TimeSeriesFrame<double>
+#         :param regressors: Independent time serieses
+#         :type regressors: TimeSeriesFrame<double>
+#         :param intercept: include/exclude intercept in the regression
+#         :type intercept: boolean
+#         """
+#         KalmanFilter.__init__(self, respond, regressors, intercept, Sigma, sigma, initBeta, initVariance, Phi, **args)
 
-    def train(self):
-        """
-        This fucntion will start the estimation. This is separated from addData.
-        """
-        beta = scipy.empty((self.t, self.n))
-        b = self.initBeta
-        V = self.initVariance
-        Phi = self.Phi
-        S = self.Sigma
-        s = self.sigma
-        y = self.respond.data
-        X = self.regressors.data
-        beta =  kalman_smoother(b, V, Phi, y, X, s, S)
-        self.est = TimeSeriesFrame(beta, 
-                                   self.regressors.rheader, 
-                                   self.regressors.cheader)
-        return self
+#     def train(self):
+#         """
+#         This fucntion will start the estimation. This is separated from addData.
+#         """
+#         beta = scipy.empty((self.t, self.n))
+#         b = self.initBeta
+#         V = self.initVariance
+#         Phi = self.Phi
+#         S = self.Sigma
+#         s = self.sigma
+#         y = self.respond.data
+#         X = self.regressors.data
+#         beta =  kalman_smoother(b, V, Phi, y, X, s, S)
+#         self.est = TimeSeriesFrame(beta, 
+#                                    self.regressors.rheader, 
+#                                    self.regressors.cheader)
+#         return self
 
 class ECKalmanFilter(KalmanFilter, ECRegression):
     """This is a KalmanFilter Class subclassed from Regression"""
