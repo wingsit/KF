@@ -43,7 +43,7 @@ from numpy import mat
 
 cvxopt.solvers.options['show_progress'] = False
 
-DEBUG = 0
+DEBUG = 1
 
 def regression(X, y, W):
     """
@@ -237,7 +237,9 @@ def kalman_upd(beta,
     if switch == 1:
         D = scipy.matrix(D)
         d = scipy.matrix(d)
+        if DEBUG: print "beta: ", beta
         beta = beta - S * D.T * ( D * S * D.T).I * ( D * beta - d)
+        if DEBUG: print "beta: ", beta
     elif switch == 2:
         G = scipy.matrix(G)
         a = scipy.matrix(a)
@@ -340,7 +342,7 @@ def kalman_filter(b,
                   Phi,
                   y,
                   X,
-                  sigma,
+                 sigma,
                   Sigma,
                   switch = 0,
                   D = None,

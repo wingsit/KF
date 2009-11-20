@@ -3,12 +3,10 @@ from regression import *
 from rollingRegression import *
 #from icRollingRegression import ICRollingRegression
 #from ecRollingRegression import ECRollingRegression
-
 from kalmanFilter import *
-
 ##from ecKalmanFilter import ECKalmanFilter
 ##from kalmanFilter import KalmanFilter
-##from kalmanSmoother import KalmanSmoother
+from kalmanSmoother import KalmanSmoother
 ##from icKalmanFilter import ICKalmanFilter
 from icFlexibleLeastSquare import ICFlexibleLeastSquare
 
